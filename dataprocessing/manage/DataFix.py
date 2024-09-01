@@ -65,8 +65,10 @@ def fill_province_comuni(dataset, codice_to_provincia, provincia_to_codice, codi
     # Uniformare la capitalizzazione nel dataset
     dataset['comune_residenza'] = dataset['comune_residenza'].str.upper()
     dataset['provincia_residenza'] = dataset['provincia_residenza'].str.upper()
+    dataset['provincia_erogazione'] = dataset['provincia_erogazione'].str.upper()
     dataset['codice_comune_residenza'] = dataset['codice_comune_residenza'].astype(str).str.upper()
     dataset['codice_provincia_residenza'] = dataset['codice_provincia_residenza'].str.upper()
+    dataset['codice_provincia_erogazione'] = dataset['codice_provincia_erogazione'].str.upper()
 
     # Uniformare la capitalizzazione nei dizionari di mappatura
     codice_to_provincia = {k.upper(): v for k, v in codice_to_provincia.items()}
@@ -80,10 +82,16 @@ def fill_province_comuni(dataset, codice_to_provincia, provincia_to_codice, codi
     # Riempimento del campo 'provincia_residenza'
     dataset['provincia_residenza'] = dataset['provincia_residenza'].fillna(dataset['codice_provincia_residenza'].map(codice_to_provincia))
 
+    # Riempimento del campo 'provincia_erogazione'
+    dataset['provincia_erogazione'] = dataset['provincia_erogazione'].fillna(dataset['codice_provincia_erogazione'].map(codice_to_provincia))
+
     # Riempimento del campo 'codice_comune_residenza'
     dataset['codice_comune_residenza'] = dataset['codice_comune_residenza'].fillna(dataset['comune_residenza'].map(comune_to_codice))
 
     # Riempimento del campo 'codice_provincia_residenza'
     dataset['codice_provincia_residenza'] = dataset['codice_provincia_residenza'].fillna(dataset['provincia_residenza'].map(provincia_to_codice))
+
+    # Riempimento del campo 'codice_provincia_erogazione'
+    dataset['codice_provincia_erogazione'] = dataset['codice_provincia_erogazione'].fillna(dataset['provincia_erogazione'].map(provincia_to_codice))
 
     return dataset

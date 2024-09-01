@@ -21,6 +21,7 @@ def main():
     #print(df)
 
     data = ManageData(df, file_path_province, file_path_comuni)
+    data.replace_none_with_nan()
     data.fix_province()
 
 if __name__ == "__main__":

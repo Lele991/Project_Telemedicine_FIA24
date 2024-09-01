@@ -1,0 +1,873 @@
+{
+  "isCacheable" : true,
+  "expireTimeCache" : 1000,
+  "Provincia" : [ {
+    "idsProvincia" : 99,
+    "codProvincia" : "001",
+    "codRegione" : "13",
+    "desProvincia" : "TORINO",
+    "desTarga" : "TO",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 108,
+    "codProvincia" : "002",
+    "codRegione" : "13",
+    "desProvincia" : "VERCELLI",
+    "desTarga" : "VC",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 63,
+    "codProvincia" : "003",
+    "codRegione" : "13",
+    "desProvincia" : "NOVARA",
+    "desTarga" : "NO",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 31,
+    "codProvincia" : "004",
+    "codRegione" : "13",
+    "desProvincia" : "CUNEO",
+    "desTarga" : "CN",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 7,
+    "codProvincia" : "005",
+    "codRegione" : "13",
+    "desProvincia" : "ASTI",
+    "desTarga" : "AT",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 2,
+    "codProvincia" : "006",
+    "codRegione" : "13",
+    "desProvincia" : "ALESSANDRIA",
+    "desTarga" : "AL",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 4,
+    "codProvincia" : "007",
+    "codRegione" : "20",
+    "desProvincia" : "AOSTA",
+    "desTarga" : "AO",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 43,
+    "codProvincia" : "008",
+    "codRegione" : "09",
+    "desProvincia" : "IMPERIA",
+    "desTarga" : "IM",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 92,
+    "codProvincia" : "009",
+    "codRegione" : "09",
+    "desProvincia" : "SAVONA",
+    "desTarga" : "SV",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 40,
+    "codProvincia" : "010",
+    "codRegione" : "09",
+    "desProvincia" : "GENOVA",
+    "desTarga" : "GE",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 45,
+    "codProvincia" : "011",
+    "codRegione" : "09",
+    "desProvincia" : "LA SPEZIA",
+    "desTarga" : "SP",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 105,
+    "codProvincia" : "012",
+    "codRegione" : "10",
+    "desProvincia" : "VARESE",
+    "desTarga" : "VA",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 27,
+    "codProvincia" : "013",
+    "codRegione" : "10",
+    "desProvincia" : "COMO",
+    "desTarga" : "CO",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 95,
+    "codProvincia" : "014",
+    "codRegione" : "10",
+    "desProvincia" : "SONDRIO",
+    "desTarga" : "SO",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 59,
+    "codProvincia" : "015",
+    "codRegione" : "10",
+    "desProvincia" : "MILANO",
+    "desTarga" : "MI",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 13,
+    "codProvincia" : "016",
+    "codRegione" : "10",
+    "desProvincia" : "BERGAMO",
+    "desTarga" : "BG",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 17,
+    "codProvincia" : "017",
+    "codRegione" : "10",
+    "desProvincia" : "BRESCIA",
+    "desTarga" : "BS",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 71,
+    "codProvincia" : "018",
+    "codRegione" : "10",
+    "desProvincia" : "PAVIA",
+    "desTarga" : "PV",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 29,
+    "codProvincia" : "019",
+    "codRegione" : "10",
+    "desProvincia" : "CREMONA",
+    "desTarga" : "CR",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 54,
+    "codProvincia" : "020",
+    "codRegione" : "10",
+    "desProvincia" : "MANTOVA",
+    "desTarga" : "MN",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 16,
+    "codProvincia" : "021",
+    "codRegione" : "03",
+    "desProvincia" : "BOLZANO-BOZEN",
+    "desTarga" : "BZ",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 101,
+    "codProvincia" : "022",
+    "codRegione" : "18",
+    "desProvincia" : "TRENTO",
+    "desTarga" : "TN",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 109,
+    "codProvincia" : "023",
+    "codRegione" : "21",
+    "desProvincia" : "VERONA",
+    "desTarga" : "VR",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 111,
+    "codProvincia" : "024",
+    "codRegione" : "21",
+    "desProvincia" : "VICENZA",
+    "desTarga" : "VI",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 11,
+    "codProvincia" : "025",
+    "codRegione" : "21",
+    "desProvincia" : "BELLUNO",
+    "desTarga" : "BL",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 102,
+    "codProvincia" : "026",
+    "codRegione" : "21",
+    "desProvincia" : "TREVISO",
+    "desTarga" : "TV",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 106,
+    "codProvincia" : "027",
+    "codRegione" : "21",
+    "desProvincia" : "VENEZIA",
+    "desTarga" : "VE",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 68,
+    "codProvincia" : "028",
+    "codRegione" : "21",
+    "desProvincia" : "PADOVA",
+    "desTarga" : "PD",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 89,
+    "codProvincia" : "029",
+    "codRegione" : "21",
+    "desProvincia" : "ROVIGO",
+    "desTarga" : "RO",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 104,
+    "codProvincia" : "030",
+    "codRegione" : "07",
+    "desProvincia" : "UDINE",
+    "desTarga" : "UD",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 41,
+    "codProvincia" : "031",
+    "codRegione" : "07",
+    "desProvincia" : "GORIZIA",
+    "desTarga" : "GO",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 103,
+    "codProvincia" : "032",
+    "codRegione" : "07",
+    "desProvincia" : "TRIESTE",
+    "desTarga" : "TS",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 75,
+    "codProvincia" : "033",
+    "codRegione" : "06",
+    "desProvincia" : "PIACENZA",
+    "desTarga" : "PC",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 70,
+    "codProvincia" : "034",
+    "codRegione" : "06",
+    "desProvincia" : "PARMA",
+    "desTarga" : "PR",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 85,
+    "codProvincia" : "035",
+    "codRegione" : "06",
+    "desProvincia" : "REGGIO EMILIA",
+    "desTarga" : "RE",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 60,
+    "codProvincia" : "036",
+    "codRegione" : "06",
+    "desProvincia" : "MODENA",
+    "desTarga" : "MO",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 15,
+    "codProvincia" : "037",
+    "codRegione" : "06",
+    "desProvincia" : "BOLOGNA",
+    "desTarga" : "BO",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 34,
+    "codProvincia" : "038",
+    "codRegione" : "06",
+    "desProvincia" : "FERRARA",
+    "desTarga" : "FE",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 83,
+    "codProvincia" : "039",
+    "codRegione" : "06",
+    "desProvincia" : "RAVENNA",
+    "desTarga" : "RA",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 38,
+    "codProvincia" : "040",
+    "codRegione" : "06",
+    "desProvincia" : "FORLÌ E CESENA",
+    "desTarga" : "FC",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 73,
+    "codProvincia" : "041",
+    "codRegione" : "11",
+    "desProvincia" : "PESARO E URBINO",
+    "desTarga" : "PU",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 3,
+    "codProvincia" : "042",
+    "codRegione" : "11",
+    "desProvincia" : "ANCONA",
+    "desTarga" : "AN",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 53,
+    "codProvincia" : "043",
+    "codRegione" : "11",
+    "desProvincia" : "MACERATA",
+    "desTarga" : "MC",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 6,
+    "codProvincia" : "044",
+    "codRegione" : "11",
+    "desProvincia" : "ASCOLI PICENO",
+    "desTarga" : "AP",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 55,
+    "codProvincia" : "045",
+    "codRegione" : "17",
+    "desProvincia" : "MASSA CARRARA",
+    "desTarga" : "MS",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 52,
+    "codProvincia" : "046",
+    "codRegione" : "17",
+    "desProvincia" : "LUCCA",
+    "desTarga" : "LU",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 77,
+    "codProvincia" : "047",
+    "codRegione" : "17",
+    "desProvincia" : "PISTOIA",
+    "desTarga" : "PT",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 35,
+    "codProvincia" : "048",
+    "codRegione" : "17",
+    "desProvincia" : "FIRENZE",
+    "desTarga" : "FI",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 50,
+    "codProvincia" : "049",
+    "codRegione" : "17",
+    "desProvincia" : "LIVORNO",
+    "desTarga" : "LI",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 76,
+    "codProvincia" : "050",
+    "codRegione" : "17",
+    "desProvincia" : "PISA",
+    "desTarga" : "PI",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 5,
+    "codProvincia" : "051",
+    "codRegione" : "17",
+    "desProvincia" : "AREZZO",
+    "desTarga" : "AR",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 93,
+    "codProvincia" : "052",
+    "codRegione" : "17",
+    "desProvincia" : "SIENA",
+    "desTarga" : "SI",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 42,
+    "codProvincia" : "053",
+    "codRegione" : "17",
+    "desProvincia" : "GROSSETO",
+    "desTarga" : "GR",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 72,
+    "codProvincia" : "054",
+    "codRegione" : "19",
+    "desProvincia" : "PERUGIA",
+    "desTarga" : "PG",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 98,
+    "codProvincia" : "055",
+    "codRegione" : "19",
+    "desProvincia" : "TERNI",
+    "desTarga" : "TR",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 112,
+    "codProvincia" : "056",
+    "codRegione" : "08",
+    "desProvincia" : "VITERBO",
+    "desTarga" : "VT",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 86,
+    "codProvincia" : "057",
+    "codRegione" : "08",
+    "desProvincia" : "RIETI",
+    "desTarga" : "RI",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 88,
+    "codProvincia" : "058",
+    "codRegione" : "08",
+    "desProvincia" : "ROMA",
+    "desTarga" : "RM",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 47,
+    "codProvincia" : "059",
+    "codRegione" : "08",
+    "desProvincia" : "LATINA",
+    "desTarga" : "LT",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 39,
+    "codProvincia" : "060",
+    "codRegione" : "08",
+    "desProvincia" : "FROSINONE",
+    "desTarga" : "FR",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 23,
+    "codProvincia" : "061",
+    "codRegione" : "05",
+    "desProvincia" : "CASERTA",
+    "desTarga" : "CE",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 12,
+    "codProvincia" : "062",
+    "codRegione" : "05",
+    "desProvincia" : "BENEVENTO",
+    "desTarga" : "BN",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 62,
+    "codProvincia" : "063",
+    "codRegione" : "05",
+    "desProvincia" : "NAPOLI",
+    "desTarga" : "NA",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 8,
+    "codProvincia" : "064",
+    "codRegione" : "05",
+    "desProvincia" : "AVELLINO",
+    "desTarga" : "AV",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 90,
+    "codProvincia" : "065",
+    "codRegione" : "05",
+    "desProvincia" : "SALERNO",
+    "desTarga" : "SA",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 46,
+    "codProvincia" : "066",
+    "codRegione" : "01",
+    "desProvincia" : "L'AQUILA",
+    "desTarga" : "AQ",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 97,
+    "codProvincia" : "067",
+    "codRegione" : "01",
+    "desProvincia" : "TERAMO",
+    "desTarga" : "TE",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 74,
+    "codProvincia" : "068",
+    "codRegione" : "01",
+    "desProvincia" : "PESCARA",
+    "desTarga" : "PE",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 26,
+    "codProvincia" : "069",
+    "codRegione" : "01",
+    "desProvincia" : "CHIETI",
+    "desTarga" : "CH",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 21,
+    "codProvincia" : "070",
+    "codRegione" : "12",
+    "desProvincia" : "CAMPOBASSO",
+    "desTarga" : "CB",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 37,
+    "codProvincia" : "071",
+    "codRegione" : "14",
+    "desProvincia" : "FOGGIA",
+    "desTarga" : "FG",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 9,
+    "codProvincia" : "072",
+    "codRegione" : "14",
+    "desProvincia" : "BARI",
+    "desTarga" : "BA",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 96,
+    "codProvincia" : "073",
+    "codRegione" : "14",
+    "desProvincia" : "TARANTO",
+    "desTarga" : "TA",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 18,
+    "codProvincia" : "074",
+    "codRegione" : "14",
+    "desProvincia" : "BRINDISI",
+    "desTarga" : "BR",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 48,
+    "codProvincia" : "075",
+    "codRegione" : "14",
+    "desProvincia" : "LECCE",
+    "desTarga" : "LE",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 80,
+    "codProvincia" : "076",
+    "codRegione" : "02",
+    "desProvincia" : "POTENZA",
+    "desTarga" : "PZ",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 56,
+    "codProvincia" : "077",
+    "codRegione" : "02",
+    "desProvincia" : "MATERA",
+    "desTarga" : "MT",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 28,
+    "codProvincia" : "078",
+    "codRegione" : "04",
+    "desProvincia" : "COSENZA",
+    "desTarga" : "CS",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 25,
+    "codProvincia" : "079",
+    "codRegione" : "04",
+    "desProvincia" : "CATANZARO",
+    "desTarga" : "CZ",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 84,
+    "codProvincia" : "080",
+    "codRegione" : "04",
+    "desProvincia" : "REGGIO CALABRIA",
+    "desTarga" : "RC",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 100,
+    "codProvincia" : "081",
+    "codRegione" : "16",
+    "desProvincia" : "TRAPANI",
+    "desTarga" : "TP",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 69,
+    "codProvincia" : "082",
+    "codRegione" : "16",
+    "desProvincia" : "PALERMO",
+    "desTarga" : "PA",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 58,
+    "codProvincia" : "083",
+    "codRegione" : "16",
+    "desProvincia" : "MESSINA",
+    "desTarga" : "ME",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 1,
+    "codProvincia" : "084",
+    "codRegione" : "16",
+    "desProvincia" : "AGRIGENTO",
+    "desTarga" : "AG",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 20,
+    "codProvincia" : "085",
+    "codRegione" : "16",
+    "desProvincia" : "CALTANISSETTA",
+    "desTarga" : "CL",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 32,
+    "codProvincia" : "086",
+    "codRegione" : "16",
+    "desProvincia" : "ENNA",
+    "desTarga" : "EN",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 24,
+    "codProvincia" : "087",
+    "codRegione" : "16",
+    "desProvincia" : "CATANIA",
+    "desTarga" : "CT",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 82,
+    "codProvincia" : "088",
+    "codRegione" : "16",
+    "desProvincia" : "RAGUSA",
+    "desTarga" : "RG",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 94,
+    "codProvincia" : "089",
+    "codRegione" : "16",
+    "desProvincia" : "SIRACUSA",
+    "desTarga" : "SR",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 91,
+    "codProvincia" : "090",
+    "codRegione" : "15",
+    "desProvincia" : "SASSARI",
+    "desTarga" : "SS",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 64,
+    "codProvincia" : "091",
+    "codRegione" : "15",
+    "desProvincia" : "NUORO",
+    "desTarga" : "NU",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 19,
+    "codProvincia" : "092",
+    "codRegione" : "15",
+    "desProvincia" : "CAGLIARI",
+    "desTarga" : "CA",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 79,
+    "codProvincia" : "093",
+    "codRegione" : "07",
+    "desProvincia" : "PORDENONE",
+    "desTarga" : "PN",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 44,
+    "codProvincia" : "094",
+    "codRegione" : "12",
+    "desProvincia" : "ISERNIA",
+    "desTarga" : "IS",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 67,
+    "codProvincia" : "095",
+    "codRegione" : "15",
+    "desProvincia" : "ORISTANO",
+    "desTarga" : "OR",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 14,
+    "codProvincia" : "096",
+    "codRegione" : "13",
+    "desProvincia" : "BIELLA",
+    "desTarga" : "BI",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 49,
+    "codProvincia" : "097",
+    "codRegione" : "10",
+    "desProvincia" : "LECCO",
+    "desTarga" : "LC",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 51,
+    "codProvincia" : "098",
+    "codRegione" : "10",
+    "desProvincia" : "LODI",
+    "desTarga" : "LO",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 87,
+    "codProvincia" : "099",
+    "codRegione" : "06",
+    "desProvincia" : "RIMINI",
+    "desTarga" : "RN",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 81,
+    "codProvincia" : "100",
+    "codRegione" : "17",
+    "desProvincia" : "PRATO",
+    "desTarga" : "PO",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 30,
+    "codProvincia" : "101",
+    "codRegione" : "04",
+    "desProvincia" : "CROTONE",
+    "desTarga" : "KR",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 110,
+    "codProvincia" : "102",
+    "codRegione" : "04",
+    "desProvincia" : "VIBO VALENTIA",
+    "desTarga" : "VV",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 107,
+    "codProvincia" : "103",
+    "codRegione" : "13",
+    "desProvincia" : "VERBANO CUSIO OSSOLA",
+    "desTarga" : "VB",
+    "dtInizio" : "2007-06-21T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 61,
+    "codProvincia" : "108",
+    "codRegione" : "10",
+    "desProvincia" : "MONZA E BRIANZA",
+    "desTarga" : "MB",
+    "dtInizio" : "2010-03-31T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 33,
+    "codProvincia" : "109",
+    "codRegione" : "11",
+    "desProvincia" : "FERMO",
+    "desTarga" : "FM",
+    "dtInizio" : "2010-03-31T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 10,
+    "codProvincia" : "110",
+    "codRegione" : "14",
+    "desProvincia" : "BARLETTA-ANDRIA-TRANI",
+    "desTarga" : "BT",
+    "dtInizio" : "2010-03-31T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsProvincia" : 122,
+    "codProvincia" : "111",
+    "codRegione" : "15",
+    "desProvincia" : "SUD SARDEGNA",
+    "desTarga" : "SU",
+    "dtInizio" : "2018-06-08T00:00:00.000+02:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  } ],
+  "TraceParameters" : {
+    "GUIDUtente" : "CMNRTA18E67H501Y",
+    "CodiceFiscale" : "CMNRTA18E67H501Y",
+    "TipoCodiceFiscale" : "CF",
+    "Applicazione" : "RAPP",
+    "TraceID" : "123"
+  },
+  "Esito" : {
+    "Codice" : "E100",
+    "Messaggio" : "OK",
+    "Linguaggio" : "Italiano"
+  }
+}

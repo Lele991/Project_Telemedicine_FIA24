@@ -1,0 +1,164 @@
+{
+  "isCacheable" : true,
+  "expireTimeCache" : 1000,
+  "Regione_ProvinciaAutonoma_Cache" : [ {
+    "idsRegione_ProvinciaAuto" : 1,
+    "codRegione_ProvinciaAuto" : "01",
+    "desRegione_ProvinciaAuto" : "ABRUZZO",
+    "codRegioneISTAT_ProvinciaAuto" : "13",
+    "dtInizio" : "1900-01-01T00:00:00.000+01:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsRegione_ProvinciaAuto" : 2,
+    "codRegione_ProvinciaAuto" : "02",
+    "desRegione_ProvinciaAuto" : "BASILICATA",
+    "codRegioneISTAT_ProvinciaAuto" : "17",
+    "dtInizio" : "1900-01-01T00:00:00.000+01:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsRegione_ProvinciaAuto" : 3,
+    "codRegione_ProvinciaAuto" : "03",
+    "desRegione_ProvinciaAuto" : "BOLZANO",
+    "codRegioneISTAT_ProvinciaAuto" : "04",
+    "dtInizio" : "1900-01-01T00:00:00.000+01:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsRegione_ProvinciaAuto" : 4,
+    "codRegione_ProvinciaAuto" : "04",
+    "desRegione_ProvinciaAuto" : "CALABRIA",
+    "codRegioneISTAT_ProvinciaAuto" : "18",
+    "dtInizio" : "1900-01-01T00:00:00.000+01:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsRegione_ProvinciaAuto" : 5,
+    "codRegione_ProvinciaAuto" : "05",
+    "desRegione_ProvinciaAuto" : "CAMPANIA",
+    "codRegioneISTAT_ProvinciaAuto" : "15",
+    "dtInizio" : "1900-01-01T00:00:00.000+01:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsRegione_ProvinciaAuto" : 6,
+    "codRegione_ProvinciaAuto" : "06",
+    "desRegione_ProvinciaAuto" : "EMILIA ROMAGNA",
+    "codRegioneISTAT_ProvinciaAuto" : "08",
+    "dtInizio" : "1900-01-01T00:00:00.000+01:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsRegione_ProvinciaAuto" : 7,
+    "codRegione_ProvinciaAuto" : "07",
+    "desRegione_ProvinciaAuto" : "FRIULI VENEZIA GIULIA",
+    "codRegioneISTAT_ProvinciaAuto" : "06",
+    "dtInizio" : "1900-01-01T00:00:00.000+01:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsRegione_ProvinciaAuto" : 8,
+    "codRegione_ProvinciaAuto" : "08",
+    "desRegione_ProvinciaAuto" : "LAZIO",
+    "codRegioneISTAT_ProvinciaAuto" : "12",
+    "dtInizio" : "1900-01-01T00:00:00.000+01:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsRegione_ProvinciaAuto" : 9,
+    "codRegione_ProvinciaAuto" : "09",
+    "desRegione_ProvinciaAuto" : "LIGURIA",
+    "codRegioneISTAT_ProvinciaAuto" : "07",
+    "dtInizio" : "1900-01-01T00:00:00.000+01:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsRegione_ProvinciaAuto" : 10,
+    "codRegione_ProvinciaAuto" : "10",
+    "desRegione_ProvinciaAuto" : "LOMBARDIA",
+    "codRegioneISTAT_ProvinciaAuto" : "03",
+    "dtInizio" : "1900-01-01T00:00:00.000+01:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsRegione_ProvinciaAuto" : 11,
+    "codRegione_ProvinciaAuto" : "11",
+    "desRegione_ProvinciaAuto" : "MARCHE",
+    "codRegioneISTAT_ProvinciaAuto" : "11",
+    "dtInizio" : "1900-01-01T00:00:00.000+01:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsRegione_ProvinciaAuto" : 12,
+    "codRegione_ProvinciaAuto" : "12",
+    "desRegione_ProvinciaAuto" : "MOLISE",
+    "codRegioneISTAT_ProvinciaAuto" : "14",
+    "dtInizio" : "1900-01-01T00:00:00.000+01:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsRegione_ProvinciaAuto" : 13,
+    "codRegione_ProvinciaAuto" : "13",
+    "desRegione_ProvinciaAuto" : "PIEMONTE",
+    "codRegioneISTAT_ProvinciaAuto" : "01",
+    "dtInizio" : "1900-01-01T00:00:00.000+01:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsRegione_ProvinciaAuto" : 14,
+    "codRegione_ProvinciaAuto" : "14",
+    "desRegione_ProvinciaAuto" : "PUGLIA",
+    "codRegioneISTAT_ProvinciaAuto" : "16",
+    "dtInizio" : "1900-01-01T00:00:00.000+01:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsRegione_ProvinciaAuto" : 15,
+    "codRegione_ProvinciaAuto" : "15",
+    "desRegione_ProvinciaAuto" : "SARDEGNA",
+    "codRegioneISTAT_ProvinciaAuto" : "20",
+    "dtInizio" : "1900-01-01T00:00:00.000+01:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsRegione_ProvinciaAuto" : 16,
+    "codRegione_ProvinciaAuto" : "16",
+    "desRegione_ProvinciaAuto" : "SICILIA",
+    "codRegioneISTAT_ProvinciaAuto" : "19",
+    "dtInizio" : "1900-01-01T00:00:00.000+01:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsRegione_ProvinciaAuto" : 17,
+    "codRegione_ProvinciaAuto" : "17",
+    "desRegione_ProvinciaAuto" : "TOSCANA",
+    "codRegioneISTAT_ProvinciaAuto" : "09",
+    "dtInizio" : "1900-01-01T00:00:00.000+01:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsRegione_ProvinciaAuto" : 18,
+    "codRegione_ProvinciaAuto" : "18",
+    "desRegione_ProvinciaAuto" : "TRENTO",
+    "codRegioneISTAT_ProvinciaAuto" : "04",
+    "dtInizio" : "1900-01-01T00:00:00.000+01:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsRegione_ProvinciaAuto" : 19,
+    "codRegione_ProvinciaAuto" : "19",
+    "desRegione_ProvinciaAuto" : "UMBRIA",
+    "codRegioneISTAT_ProvinciaAuto" : "10",
+    "dtInizio" : "1900-01-01T00:00:00.000+01:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsRegione_ProvinciaAuto" : 20,
+    "codRegione_ProvinciaAuto" : "20",
+    "desRegione_ProvinciaAuto" : "VAL D'AOSTA",
+    "codRegioneISTAT_ProvinciaAuto" : "02",
+    "dtInizio" : "1900-01-01T00:00:00.000+01:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  }, {
+    "idsRegione_ProvinciaAuto" : 21,
+    "codRegione_ProvinciaAuto" : "21",
+    "desRegione_ProvinciaAuto" : "VENETO",
+    "codRegioneISTAT_ProvinciaAuto" : "05",
+    "dtInizio" : "1900-01-01T00:00:00.000+01:00",
+    "dtFine" : "2099-12-31T00:00:00.000+01:00"
+  } ],
+  "TraceParameters" : {
+    "GUIDUtente" : "CMNRTA18E67H501Y",
+    "CodiceFiscale" : "CMNRTA18E67H501Y",
+    "TipoCodiceFiscale" : "CF",
+    "Applicazione" : "RAPP",
+    "TraceID" : "123"
+  },
+  "Esito" : {
+    "Codice" : "E100",
+    "Messaggio" : "OK",
+    "Linguaggio" : "Italiano"
+  }
+}

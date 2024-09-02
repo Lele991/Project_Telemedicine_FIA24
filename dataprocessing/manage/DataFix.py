@@ -1,6 +1,7 @@
 # metodo per riempire le province/comuni mancanti
 
 import json
+import pandas as pd
 
 def fetch_province_code_data(file_path):
     # Carica il file JSON locale
@@ -61,14 +62,21 @@ def fetch_comuni_code_data(file_path):
 
     return codice_to_comune, comune_to_codice
 
-def fill_province_comuni(dataset, codice_to_provincia, provincia_to_codice, codice_to_comune, comune_to_codice):
-    # Uniformare la capitalizzazione nel dataset
-    dataset['comune_residenza'] = dataset['comune_residenza'].str.upper()
-    dataset['provincia_residenza'] = dataset['provincia_residenza'].str.upper()
-    dataset['provincia_erogazione'] = dataset['provincia_erogazione'].str.upper()
+import pandas as pd
+
+import pandas as pd
+
+def process_province_comuni(dataset, codice_to_provincia, provincia_to_codice, codice_to_comune, comune_to_codice):
+    # Crea una copia esplicita del DataFrame
+    dataset = dataset.copy()
+    
+    # Uniformare la capitalizzazione nel dataset e assegnare i risultati alle colonne
+    dataset['comune_residenza'] = dataset['comune_residenza'].astype(str).str.upper()
+    dataset['provincia_residenza'] = dataset['provincia_residenza'].astype(str).str.upper()
+    dataset['provincia_erogazione'] = dataset['provincia_erogazione'].astype(str).str.upper()
     dataset['codice_comune_residenza'] = dataset['codice_comune_residenza'].astype(str).str.upper()
-    dataset['codice_provincia_residenza'] = dataset['codice_provincia_residenza'].str.upper()
-    dataset['codice_provincia_erogazione'] = dataset['codice_provincia_erogazione'].str.upper()
+    dataset['codice_provincia_residenza'] = dataset['codice_provincia_residenza'].astype(str).str.upper()
+    dataset['codice_provincia_erogazione'] = dataset['codice_provincia_erogazione'].astype(str).str.upper()
 
     # Uniformare la capitalizzazione nei dizionari di mappatura
     codice_to_provincia = {k.upper(): v for k, v in codice_to_provincia.items()}
@@ -76,22 +84,76 @@ def fill_province_comuni(dataset, codice_to_provincia, provincia_to_codice, codi
     codice_to_comune = {k.upper(): v for k, v in codice_to_comune.items()}
     comune_to_codice = {k.upper(): v for k, v in comune_to_codice.items()}
 
-    # Riempimento del campo 'comune_residenza'
+    # Riempimento dei campi con le mappe
     dataset['comune_residenza'] = dataset['comune_residenza'].fillna(dataset['codice_comune_residenza'].map(codice_to_comune))
-
-    # Riempimento del campo 'provincia_residenza'
     dataset['provincia_residenza'] = dataset['provincia_residenza'].fillna(dataset['codice_provincia_residenza'].map(codice_to_provincia))
-
-    # Riempimento del campo 'provincia_erogazione'
     dataset['provincia_erogazione'] = dataset['provincia_erogazione'].fillna(dataset['codice_provincia_erogazione'].map(codice_to_provincia))
-
-    # Riempimento del campo 'codice_comune_residenza'
     dataset['codice_comune_residenza'] = dataset['codice_comune_residenza'].fillna(dataset['comune_residenza'].map(comune_to_codice))
-
-    # Riempimento del campo 'codice_provincia_residenza'
     dataset['codice_provincia_residenza'] = dataset['codice_provincia_residenza'].fillna(dataset['provincia_residenza'].map(provincia_to_codice))
-
-    # Riempimento del campo 'codice_provincia_erogazione'
     dataset['codice_provincia_erogazione'] = dataset['codice_provincia_erogazione'].fillna(dataset['provincia_erogazione'].map(provincia_to_codice))
 
+    return dataset
+
+
+
+def fill_province_comuni(dataset, path_province, path_comuni):
+    # Call the fetch_province_code_data and fetch_comuni_code_data function from DataFix.py
+    # to get the dictionaries codice_to_provincia and provincia_to_codice
+    codice_to_provincia, provincia_to_codice = fetch_province_code_data(path_province)
+    codice_to_comune, comune_to_codice = fetch_comuni_code_data(path_comuni)
+
+    # Check if the dictionaries are not None
+    if codice_to_provincia is not None and provincia_to_codice is not None and codice_to_comune is not None and comune_to_codice is not None:
+        # Call the process_province_comuni
+        dataset = process_province_comuni(dataset, codice_to_provincia, provincia_to_codice, codice_to_comune, comune_to_codice)
+    return dataset
+
+def add_durata_visita(dataset):
+    """
+    Calcola la durata della visita per le righe.
+    
+    Aggiunge una nuova colonna 'durata_visita' che rappresenta la durata della visita in minuti.
+    """
+    
+    # Converte le colonne in datetime
+    dataset['ora_inizio_erogazione'] = pd.to_datetime(dataset['ora_inizio_erogazione'], utc=True, errors='coerce')
+    dataset['ora_fine_erogazione'] = pd.to_datetime(dataset['ora_fine_erogazione'], utc=True, errors='coerce')
+
+    # Calcola la durata della visita in minuti per le righe rimanenti
+    dataset['durata_visita'] = (dataset['ora_fine_erogazione'] - dataset['ora_inizio_erogazione']).dt.total_seconds() / 60
+    
+    return dataset
+
+def add_eta_paziente(dataset):
+    """
+    Calcola l'età del paziente in base alla data di nascita e aggiunge una nuova colonna 'eta_paziente'.
+    """
+    # Converte la colonna 'data_nascita' in datetime
+    dataset['data_nascita'] = pd.to_datetime(dataset['data_nascita'], errors='coerce')
+
+    # Calcola l'età del paziente in base alla data di nascita
+    dataset['eta_paziente'] = (pd.to_datetime('today') - dataset['data_nascita']).dt.days // 365
+
+    # Rimuove la colonna 'data_nascita'
+    dataset.drop(columns=['data_nascita'], inplace=True)
+
+    return dataset
+
+def fill_durata_visita(dataset):
+    """
+    Calcola la durata della visita per le righe in cui 'durata_visita' è nulla.
+    """
+    # Converte le colonne in datetime
+    dataset['ora_inizio_erogazione'] = pd.to_datetime(dataset['ora_inizio_erogazione'], utc=True)
+    dataset['ora_fine_erogazione'] = pd.to_datetime(dataset['ora_fine_erogazione'], utc=True)
+    
+    # Trova le righe dove 'durata_visita' è nulla
+    missing_durata = dataset['durata_visita'].isnull()
+
+    # Calcola la durata della visita in minuti per le righe con 'durata_visita' mancante
+    dataset.loc[missing_durata, 'durata_visita'] = (
+        dataset.loc[missing_durata, 'ora_fine_erogazione'] - 
+        dataset.loc[missing_durata, 'ora_inizio_erogazione']
+    ).dt.total_seconds() / 60
+    
     return dataset

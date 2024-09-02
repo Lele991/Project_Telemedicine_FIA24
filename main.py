@@ -1,6 +1,5 @@
 import pandas as pd
 from dataprocessing.ManageData import ManageData
-from dataprocessing.manage import DataFix, DataCleaner
 
 def load_data(file_path):
     # Load the data
@@ -13,6 +12,9 @@ def main():
     file_path_data = 'data/challenge_campus_biomedico_2024.parquet'
     file_path_province = 'data/italia/province.json'
     file_path_comuni = 'data/italia/comuni.json'
+    
+    # Set the missing threshold
+    missing_threshold = 0.6
 
     # Load the Parquet file into a DataFrame
     df = load_data(file_path_data)
@@ -20,9 +22,13 @@ def main():
     # Print the DataFrame
     #print(df)
 
-    data = ManageData(df, file_path_province, file_path_comuni)
+    data = ManageData(df, file_path_province, file_path_comuni, missing_threshold)
     data.replace_none_with_nan()
-    data.fix_province()
+    data.clean_data()
+    
+    df = data.get_dataset()
+    print(df.head())
+
 
 if __name__ == "__main__":
     main()

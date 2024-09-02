@@ -6,13 +6,21 @@
 
 import numpy as np
 import pandas as pd
-from dataprocessing.manage import DataFix
+
+from dataprocessing.manage import DataCleaner, DataFix
 
 class ManageData:
-    def __init__(self, dataset, path_province, path_comuni):
+    def __init__(self, dataset, path_province, path_comuni, missing_threshold=0.6):
         self.dataset = dataset
         self.path_province = path_province
         self.path_comuni = path_comuni
+        self.missing_threshold = missing_threshold
+
+    def get_dataset(self):
+        return self.dataset
+    
+    def set_dataset(self, dataset):
+        self.dataset = dataset
 
     def replace_none_with_nan(self):
         """
@@ -22,7 +30,7 @@ class ManageData:
         dataset (pd.DataFrame): Il DataFrame in cui eseguire la sostituzione.
         
         Ritorna:
-        pd.DataFrame: Il DataFrame con 'None' e None sostituiti con NaN.
+        dataset: Il DataFrame con 'None' e None sostituiti con NaN.
         """
         # Verifica che il dataset sia un DataFrame
         if not isinstance(self.dataset, pd.DataFrame):
@@ -31,13 +39,36 @@ class ManageData:
         # Sostituisce 'None' e None con NaN
         self.dataset.replace({'None': np.nan, None: np.nan}, inplace=True)
 
-    def fix_province(self):
-        # Call the fetch_province_code_data and fetch_comuni_code_data function from DataFix.py
-        # to get the dictionaries codice_to_provincia and provincia_to_codice
-        codice_to_provincia, provincia_to_codice = DataFix.fetch_province_code_data(self.path_province)
-        codice_to_comune, comune_to_codice = DataFix.fetch_comuni_code_data(self.path_comuni)
+    def clean_data(self):
+        """Esegue una pulizia completa dei dati."""
+        df = self.dataset
+        #columns = [
+        # data inpiut 1/2:
+        #    'id_prenotazione', 'id_paziente', 'codice_regione_residenza', 'codice_asl_residenza', 'codice_provincia_residenza',
+        #    'codice_comune_residenza', 'descrizione_attivita', 'data_contatto', 'data_disdetta',
+        # data inpiut 2/2:
+        #    'codice_regione_erogazione', 'struttura_erogazione', 'tipologia_struttura_erogazione', 'id_professionista_sanitario',
+        #    'tipologia_professionista_sanitario', 'codice_tipologia_professionista_sanitario', 'ora_inizio_erogazione', 'ora_fine_erogazione', 'data_erogazione'
+        #]
 
-        # Check if the dictionaries are not None
-        if codice_to_provincia is not None and provincia_to_codice is not None and codice_to_comune is not None and comune_to_codice is not None:
-            # Call the fill_province_comuni function from DataFix.py
-            self.dataset = DataFix.fill_province_comuni(self.dataset, codice_to_provincia, provincia_to_codice, codice_to_comune, comune_to_codice)
+        # Rimuove duplicati
+        df = DataCleaner.remove_duplicates(df)
+
+        # Rimuove righe dove 'data_disdetta' non è nullo
+        df = DataCleaner.remove_disdette(df)
+        
+        # Fix province e comuni
+        df = DataFix.fill_province_comuni(df, self.path_province, self.path_comuni)
+
+        df = DataCleaner.remove_missing_values_rows(df, self.missing_threshold)
+        
+        df = DataFix.add_durata_visita(df)
+        df = DataFix.fill_durata_visita(df)
+        df = DataFix.add_eta_paziente(df)
+
+        df = DataCleaner.update_dataset_with_outliers(df)
+
+        columns = ['ora_inizio_erogazione', 'ora_fine_erogazione']
+        df = DataCleaner.remove_columns(df, columns)
+
+        self.set_dataset(df)

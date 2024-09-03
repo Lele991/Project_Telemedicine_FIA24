@@ -64,13 +64,31 @@ class FeatureSelection:
 
     def remove_perfectly_correlated_features(self, corr_matrix):
         logging.info("Rimozione delle colonne con correlazione perfetta (1.0)")
-        # Identifica le colonne che hanno una correlazione perfetta (1) con altre colonne e le rimuove
         to_drop = set()
+
         for i in range(len(corr_matrix.columns)):
             for j in range(i):
                 if corr_matrix.iloc[i, j] == 1.0:
-                    to_drop.add(corr_matrix.columns[i])
-        
+                    col1 = corr_matrix.columns[i]
+                    col2 = corr_matrix.columns[j]
+                    
+                    # Calcola la cardinalità e i valori nulli per decidere quale colonna tenere
+                    col1_cardinality = self.df[col1].nunique()
+                    col2_cardinality = self.df[col2].nunique()
+                    col1_nulls = self.df[col1].isnull().sum()
+                    col2_nulls = self.df[col2].isnull().sum()
+
+                    # Logica per decidere quale colonna mantenere
+                    if col1_cardinality < col2_cardinality:
+                        to_drop.add(col2)
+                    elif col1_cardinality > col2_cardinality:
+                        to_drop.add(col1)
+                    else:  # Se la cardinalità è uguale, considera i valori nulli
+                        if col1_nulls > col2_nulls:
+                            to_drop.add(col1)
+                        else:
+                            to_drop.add(col2)
+
         if to_drop:
             logging.info(f"Colonne rimosse per correlazione perfetta: {list(to_drop)}")
         else:
@@ -125,7 +143,7 @@ class FeatureSelection:
         plt.close()
         logging.info(f"Heatmap salvata con successo in {filepath}")
 
-    def execute_feature_selection(self, threshold=0.8):
+    def execute_feature_selection(self, threshold=0.8, remove_others_colum_by_threshold=False):
         """
         Esegue l'intero processo di selezione delle caratteristiche.
         Parametri:
@@ -139,22 +157,23 @@ class FeatureSelection:
         initial_corr_matrix = self.create_correlation_matrix()
 
         # Visualizza e salva la heatmap originale
-        self.display_heatmap(initial_corr_matrix, "Matrice di Correlazione Completa", "heatmap_initial.png")
+        self.display_heatmap(initial_corr_matrix, "Matrice di Correlazione Originale", "heatmap_initial.png")
         
         # Rimuove le colonne con correlazione perfetta
         self.remove_perfectly_correlated_features(initial_corr_matrix)
         
-        # Aggiorna la matrice di correlazione dopo aver rimosso le colonne perfettamente correlate
-        updated_corr_matrix = self.create_correlation_matrix()
+        if(remove_others_colum_by_threshold):
+            # Aggiorna la matrice di correlazione dopo aver rimosso le colonne perfettamente correlate
+            updated_corr_matrix = self.create_correlation_matrix()
 
-        # Rimuove le colonne altamente correlate
-        self.remove_highly_correlated_features(updated_corr_matrix, threshold)
+            # Rimuove le colonne altamente correlate
+            self.remove_highly_correlated_features(updated_corr_matrix, threshold)
         
         # Crea una nuova matrice di correlazione dopo la rimozione delle colonne
         final_corr_matrix = self.create_correlation_matrix()
 
         # Visualizza e salva la heatmap finale
-        self.display_heatmap(final_corr_matrix, "Matrice di Correlazione dopo la Rimozione", "heatmap_final.png")
+        self.display_heatmap(final_corr_matrix, "Matrice di Correlazione Finale", "heatmap_final.png")
         
         logging.info("Selezione delle caratteristiche completata con successo")
         # Restituisce il DataFrame finale

@@ -73,14 +73,21 @@ class ManageData:
         df = DataCleaner.update_dataset_with_outliers(df)
 
         # Rimuove colonne non più necessarie
+        #columns = ['ora_inizio_erogazione', 'ora_fine_erogazione',
+        #           'id_prenotazione', 'id_paziente', 'regione_residenza', 'codice_regione_residenza',
+        #           'asl_residenza', 'codice_asl_residenza', 'provincia_residenza',
+        #           'comune_residenza', 'codice_comune_residenza', 'descrizione_attivita',
+        #           'data_contatto', 'regione_erogazione', 'asl_erogazione', 'provincia_erogazione',
+        #           'tipologia_struttura_erogazione', 'id_professionista_sanitario',
+        #           'tipologia_professionista_sanitario', 'codice_tipologia_professionista_sanitario']
+
         columns = ['ora_inizio_erogazione', 'ora_fine_erogazione',
                    'id_prenotazione', 'id_paziente', 'regione_residenza', 'codice_regione_residenza',
-                   'asl_residenza', 'codice_asl_residenza', 'provincia_residenza',
+                   'asl_residenza', 'provincia_residenza',
                    'comune_residenza', 'codice_comune_residenza', 'descrizione_attivita',
                    'data_contatto', 'regione_erogazione', 'asl_erogazione', 'provincia_erogazione',
-                   'tipologia_struttura_erogazione', 'id_professionista_sanitario',
-                   'tipologia_professionista_sanitario', 'codice_tipologia_professionista_sanitario']
-
+                   'id_professionista_sanitario',
+                   'tipologia_professionista_sanitario']
         df = DataCleaner.remove_columns(df, columns)
 
         # Imposta il dataset pulito

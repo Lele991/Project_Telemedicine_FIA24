@@ -1,19 +1,26 @@
-# metodo per riempire le province/comuni mancanti
-
 import json
+import numpy as np
 import pandas as pd
+import logging
+
+# Configurazione del logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def fetch_province_code_data(file_path):
-    # Carica il file JSON locale
+    """
+    Carica i dati delle province da un file JSON e restituisce due dizionari:
+    - codice_to_provincia: Mappa i codici delle province ai nomi delle province.
+    - provincia_to_codice: Mappa i nomi delle province ai codici delle province.
+    """
     try:
         with open(file_path, 'r', encoding='utf-8') as file:
             data = json.load(file)
             province_list = data['Provincia']
     except FileNotFoundError:
-        print(f"Errore: Il file {file_path} non è stato trovato.")
+        logging.error(f"Errore: Il file {file_path} non è stato trovato.")
         return None, None
     except json.JSONDecodeError:
-        print("Errore nella decodifica del file JSON.")
+        logging.error("Errore nella decodifica del file JSON.")
         return None, None
 
     # Dizionari per contenere sigla e provincia
@@ -29,22 +36,27 @@ def fetch_province_code_data(file_path):
             codice_to_provincia[codice] = provincia
             provincia_to_codice[provincia] = codice
 
+    logging.info(f"Province caricate con successo dal file {file_path}.")
     return codice_to_provincia, provincia_to_codice
 
 def fetch_comuni_code_data(file_path):
-    # Carica il file JSON locale
+    """
+    Carica i dati dei comuni da un file JSON e restituisce due dizionari:
+    - codice_to_comune: Mappa i codici dei comuni ai nomi dei comuni.
+    - comune_to_codice: Mappa i nomi dei comuni ai codici dei comuni.
+    """
     try:
         with open(file_path, 'r', encoding='utf-8') as file:
             data = json.load(file)
             comuni_list = data['Comune_StatoEstero_Cache']
     except FileNotFoundError:
-        print(f"Errore: Il file {file_path} non è stato trovato.")
+        logging.error(f"Errore: Il file {file_path} non è stato trovato.")
         return None, None
     except json.JSONDecodeError:
-        print("Errore nella decodifica del file JSON.")
+        logging.error("Errore nella decodifica del file JSON.")
         return None, None
 
-    # Dizionari per contenere sigla e provincia
+    # Dizionari per contenere sigla e comune
     codice_to_comune = {}
     comune_to_codice = {}
 
@@ -60,13 +72,23 @@ def fetch_comuni_code_data(file_path):
             codice_to_comune[codice] = comune
             comune_to_codice[comune] = codice
 
+    logging.info(f"Comuni caricati con successo dal file {file_path}.")
     return codice_to_comune, comune_to_codice
 
-import pandas as pd
-
-import pandas as pd
-
 def process_province_comuni(dataset, codice_to_provincia, provincia_to_codice, codice_to_comune, comune_to_codice):
+    """
+    Processa il dataset per riempire i campi relativi a comuni e province
+    utilizzando i dizionari di mappatura forniti.
+    """
+    # Controllo sui dati iniziali
+    required_columns = ['comune_residenza', 'provincia_residenza', 'provincia_erogazione', 
+                        'codice_comune_residenza', 'codice_provincia_residenza', 'codice_provincia_erogazione']
+    
+    missing_columns = [col for col in required_columns if col not in dataset.columns]
+    if missing_columns:
+        logging.error(f"Le seguenti colonne sono mancanti nel dataset: {missing_columns}")
+        return dataset
+
     # Crea una copia esplicita del DataFrame
     dataset = dataset.copy()
     
@@ -92,20 +114,24 @@ def process_province_comuni(dataset, codice_to_provincia, provincia_to_codice, c
     dataset['codice_provincia_residenza'] = dataset['codice_provincia_residenza'].fillna(dataset['provincia_residenza'].map(provincia_to_codice))
     dataset['codice_provincia_erogazione'] = dataset['codice_provincia_erogazione'].fillna(dataset['provincia_erogazione'].map(provincia_to_codice))
 
+    logging.info("Processamento delle province e comuni completato con successo.")
     return dataset
 
-
-
 def fill_province_comuni(dataset, path_province, path_comuni):
-    # Call the fetch_province_code_data and fetch_comuni_code_data function from DataFix.py
-    # to get the dictionaries codice_to_provincia and provincia_to_codice
+    """
+    Riempie i dati mancanti relativi a province e comuni nel dataset utilizzando i file JSON forniti.
+    """
+    # Carica i dati delle province e dei comuni
     codice_to_provincia, provincia_to_codice = fetch_province_code_data(path_province)
     codice_to_comune, comune_to_codice = fetch_comuni_code_data(path_comuni)
 
-    # Check if the dictionaries are not None
+    # Controlla se i dizionari sono stati caricati correttamente
     if codice_to_provincia is not None and provincia_to_codice is not None and codice_to_comune is not None and comune_to_codice is not None:
-        # Call the process_province_comuni
+        # Processa il dataset per riempire i campi mancanti
         dataset = process_province_comuni(dataset, codice_to_provincia, provincia_to_codice, codice_to_comune, comune_to_codice)
+    else:
+        logging.error("Errore nel caricamento dei dati di province o comuni. Il riempimento dei campi non è stato eseguito.")
+    
     return dataset
 
 def add_durata_visita(dataset):
@@ -113,28 +139,52 @@ def add_durata_visita(dataset):
     Calcola la durata della visita per le righe.
     
     Aggiunge una nuova colonna 'durata_visita' che rappresenta la durata della visita in minuti.
+    Gestisce i casi in cui 'ora_inizio_erogazione' o 'ora_fine_erogazione' sono mancanti o non validi.
     """
-    
-    # Converte le colonne in datetime
+    # Controllo sui dati iniziali
+    if 'ora_inizio_erogazione' not in dataset.columns or 'ora_fine_erogazione' not in dataset.columns:
+        logging.error("Le colonne 'ora_inizio_erogazione' e 'ora_fine_erogazione' devono essere presenti nel dataset.")
+        return dataset
+
     dataset['ora_inizio_erogazione'] = pd.to_datetime(dataset['ora_inizio_erogazione'], utc=True, errors='coerce')
     dataset['ora_fine_erogazione'] = pd.to_datetime(dataset['ora_fine_erogazione'], utc=True, errors='coerce')
 
-    # Calcola la durata della visita in minuti per le righe rimanenti
     dataset['durata_visita'] = (dataset['ora_fine_erogazione'] - dataset['ora_inizio_erogazione']).dt.total_seconds() / 60
-    
+
+    # Validazione delle durate
+    invalid_durations = dataset['durata_visita'] < 0
+    if invalid_durations.any():
+        logging.warning(f"Ci sono {invalid_durations.sum()} righe con durata visita negativa. Queste verranno impostate a NaN.")
+    dataset['durata_visita'] = dataset['durata_visita'].apply(lambda x: np.nan if x < 0 else x)
+
+    num_missing_durations = dataset['durata_visita'].isnull().sum()
+    logging.info(f'Add Durata Visita: Calcolata la durata della visita. {num_missing_durations} righe hanno durate mancanti o non valide.')
+
     return dataset
 
 def add_eta_paziente(dataset):
     """
     Calcola l'età del paziente in base alla data di nascita e aggiunge una nuova colonna 'eta_paziente'.
+    Gestisce i casi in cui la data di nascita è mancante o non valida.
     """
-    # Converte la colonna 'data_nascita' in datetime
-    dataset['data_nascita'] = pd.to_datetime(dataset['data_nascita'], errors='coerce')
+    # Controllo sui dati iniziali
+    if 'data_nascita' not in dataset.columns:
+        logging.error("La colonna 'data_nascita' deve essere presente nel dataset.")
+        return dataset
 
-    # Calcola l'età del paziente in base alla data di nascita
+    dataset['data_nascita'] = pd.to_datetime(dataset['data_nascita'], errors='coerce')
     dataset['eta_paziente'] = (pd.to_datetime('today') - dataset['data_nascita']).dt.days // 365
 
-    # Rimuove la colonna 'data_nascita'
+    # Validazione dell'età
+    invalid_ages = (dataset['eta_paziente'] < 0) | (dataset['eta_paziente'] > 120)
+    if invalid_ages.any():
+        logging.warning(f"Ci sono {invalid_ages.sum()} righe con età paziente non plausibile. Queste verranno impostate a NaN.")
+    dataset['eta_paziente'] = dataset['eta_paziente'].apply(lambda x: np.nan if x < 0 or x > 120 else x)
+
+    num_missing_ages = dataset['eta_paziente'].isnull().sum()
+    logging.info(f'Add Eta Paziente: Calcolata l\'età del paziente. {num_missing_ages} righe hanno età mancanti o non valide.')
+
+    # Rimozione della colonna 'data_nascita' dopo aver calcolato l'età
     dataset.drop(columns=['data_nascita'], inplace=True)
 
     return dataset
@@ -142,18 +192,53 @@ def add_eta_paziente(dataset):
 def fill_durata_visita(dataset):
     """
     Calcola la durata della visita per le righe in cui 'durata_visita' è nulla.
+    Per le righe mancanti di 'ora_inizio_erogazione' o 'ora_fine_erogazione',
+    utilizza la media delle durate per il tipo di servizio offerto ('codice_descrizione_attivita').
     """
-    # Converte le colonne in datetime
-    dataset['ora_inizio_erogazione'] = pd.to_datetime(dataset['ora_inizio_erogazione'], utc=True)
-    dataset['ora_fine_erogazione'] = pd.to_datetime(dataset['ora_fine_erogazione'], utc=True)
-    
-    # Trova le righe dove 'durata_visita' è nulla
     missing_durata = dataset['durata_visita'].isnull()
 
-    # Calcola la durata della visita in minuti per le righe con 'durata_visita' mancante
+    # Calcola la durata della visita in minuti per le righe con 'durata_visita' mancante ma con orari disponibili
     dataset.loc[missing_durata, 'durata_visita'] = (
         dataset.loc[missing_durata, 'ora_fine_erogazione'] - 
         dataset.loc[missing_durata, 'ora_inizio_erogazione']
     ).dt.total_seconds() / 60
-    
+
+    # Gestisce i casi in cui mancano 'ora_inizio_erogazione' o 'ora_fine_erogazione'
+    durata_media_per_servizio = dataset.groupby('codice_descrizione_attivita')['durata_visita'].mean()
+
+    dataset['durata_visita'] = dataset.apply(
+        lambda row: durata_media_per_servizio[row['codice_descrizione_attivita']] 
+        if pd.isnull(row['durata_visita']) else row['durata_visita'], axis=1
+    )
+
+    num_filled_durations = dataset['durata_visita'].isnull().sum()
+    logging.info(f'Fill Durata Visita: Riempite le durate mancanti. {num_filled_durations} righe hanno ancora durate mancanti.')
+
     return dataset
+
+def add_fascia_eta_column(dataset):
+    """
+    Genera una Serie 'fascia_eta' basata sulla colonna 'eta_paziente' secondo le fasce specificate.
+    """
+    def determina_fascia_eta(eta):
+        if eta < 12:
+            return '0-12'
+        elif eta < 24:
+            return '13-24'
+        elif eta < 36:
+            return '25-36'
+        elif eta < 48:
+            return '37-48'
+        elif eta < 60:
+            return '49-60'
+        elif eta < 70:
+            return '61-70'
+        else:
+            return '71+'
+    
+    # Restituisce una nuova colonna (Serie) senza modificare direttamente il dataset
+    dataset['fascia_eta'] = dataset['eta_paziente'].apply(determina_fascia_eta)
+    logging.info("Generata la colonna 'fascia_eta' basata sull'età del paziente.")
+    return dataset
+
+

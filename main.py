@@ -27,7 +27,12 @@ def main():
     data.clean_data()
     
     df = data.get_dataset()
-    print(df.head())
+    #print(df)
+
+    colonne = df.columns
+    print("Colonne presenti nel DataFrame finale:")
+    print(colonne.tolist())
+
 
 
 if __name__ == "__main__":

@@ -101,4 +101,6 @@ class ManageData:
 
         featureSelection = FeatureSelection(df)
         featureSelection.execute_feature_selection(threshold=0.85,remove_others_colum_by_threshold=True)
+        df = featureSelection.get_dataset()
+        self.set_dataset(df)
 

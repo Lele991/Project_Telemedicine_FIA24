@@ -27,6 +27,9 @@ class FeatureSelection:
             self.df.drop(columns=['outlier'], inplace=True)
             self.categorical_columns.remove('outlier')
 
+    def get_dataset(self):
+        return self.df
+
     def calculate_cramers_v(self, column1, column2):
         logging.debug(f"Calcolo di Cramér's V tra {column1} e {column2}")
         # Crea una tabella di contingenza delle due colonne
@@ -98,7 +101,6 @@ class FeatureSelection:
         self.categorical_columns = [col for col in self.categorical_columns if col not in to_drop]
         self.df.drop(columns=list(to_drop), inplace=True)
         logging.info(f"Colonne rimanenti dopo la rimozione delle perfettamente correlate: {self.categorical_columns}")
-        return to_drop
 
     def remove_highly_correlated_features(self, corr_matrix, threshold=0.8):
         logging.info(f"Rimozione delle colonne con correlazione superiore alla soglia di {threshold}")
@@ -118,7 +120,6 @@ class FeatureSelection:
         self.df.drop(columns=list(to_drop), inplace=True)
         self.categorical_columns = [col for col in self.categorical_columns if col not in to_drop]
         logging.info(f"Colonne rimanenti dopo la rimozione delle altamente correlate: {self.categorical_columns}")
-        return to_drop
 
     def display_heatmap(self, corr_matrix, title, filename):
         if corr_matrix.empty:
@@ -176,5 +177,3 @@ class FeatureSelection:
         self.display_heatmap(final_corr_matrix, "Matrice di Correlazione Finale", "heatmap_final.png")
         
         logging.info("Selezione delle caratteristiche completata con successo")
-        # Restituisce il DataFrame finale
-        return self.df

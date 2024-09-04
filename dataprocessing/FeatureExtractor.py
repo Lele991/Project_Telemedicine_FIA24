@@ -39,10 +39,11 @@ class FeatureExtractor:
         self.incremento_percentuale_medio = df_grouped.groupby(df_cols_no_anno)['incremento_percentuale'].mean().reset_index()
         
         # Unisce i risultati al dataset originale
-        #self.dataset = pd.merge(self.dataset, df_grouped[['anno', 'trimestre', 'codice_descrizione_attivita', 'fascia_eta', 'incremento', 'incremento_percentuale']],
-        #                        on=['anno', 'trimestre', 'codice_descrizione_attivita', 'fascia_eta'], how='left')
+        new_cols = ['incremento_percentuale', 'numero_servizi']
+        self.dataset = pd.merge(self.dataset, df_grouped[cols_grouped + new_cols],
+                                on=cols_grouped, how='left')
 
-    def add_quarter_column(self):
+    def add_trimestre_column(self):
         """
         Aggiunge una colonna che indica il trimestre di erogazione del servizio,
         gestendo correttamente le differenze di fuso orario.
@@ -54,7 +55,7 @@ class FeatureExtractor:
         self.dataset['data_erogazione'] = self.dataset['data_erogazione'].dt.tz_localize(None)
         
         # Creiamo una nuova colonna con il trimestre di erogazione del servizio
-        self.dataset['trimestre'] = self.dataset['data_erogazione'].dt.to_period('Q')
+        self.dataset['trimestre'] = self.dataset['data_erogazione'].dt.to_period('T')
 
     def preprocess_data(self):
         """
@@ -123,7 +124,7 @@ class FeatureExtractor:
                 labels.append(f"{year}")
                 previous_year = year
             else:
-                labels.append(f"Q{quarter}")
+                labels.append(f"T{quarter}")
 
         # Plot del trend con le etichette personalizzate
         plt.plot(trend.index.astype(str), trend.values, marker='o', linestyle='-')
@@ -150,7 +151,7 @@ class FeatureExtractor:
         self.calculate_percentage_increments()
         
         # Aggiunta della colonna del trimestre
-        self.add_quarter_column()
+        self.add_trimestre_column()
         
         # Generazione e salvataggio dei grafici
         self.plot_graph()

@@ -1,7 +1,11 @@
+import logging
 import os
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+
+# Configurazione del logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 class FeatureExtractor:
     def __init__(self, dataset):
@@ -10,6 +14,7 @@ class FeatureExtractor:
         """
         self.dataset = dataset.copy()
         self.incremento_percentuale_medio = None
+        logging.info("FeatureExtractor inizializzato.")
 
     def get_dataset(self):
         """
@@ -17,13 +22,32 @@ class FeatureExtractor:
         """
         return self.dataset
 
+    def preprocess_data(self):
+        """
+        Preprocessa i dati per l'analisi, convertendo le date e creando nuove colonne per anno e trimestre.
+        """
+        logging.info("Inizio del preprocessamento dei dati.")
+        # Conversione della colonna 'data_erogazione' in datetime e gestione dei fusi orari
+        self.dataset['data_erogazione'] = pd.to_datetime(self.dataset['data_erogazione'], utc=True, errors='coerce')
+        
+        if self.dataset['data_erogazione'].isnull().any():
+            print("Warning: Ci sono valori mancanti in 'data_erogazione'.")
+        
+        # Creazione delle colonne 'anno' e 'trimestre'
+        self.dataset['anno'] = self.dataset['data_erogazione'].dt.year
+        self.dataset['trimestre'] = ((self.dataset['data_erogazione'].dt.month - 1) // 3) + 1
+        logging.info("Preprocessamento dei dati completato.")
+
     def calculate_percentage_increments(self):
         """Calcola gli incrementi percentuali di una colonna specificata e li aggiunge al dataset."""
+        logging.info("Inizio del calcolo degli incrementi percentuali.")
+
         # Definizione delle colonne per il raggruppamento
         cols_grouped = ['anno', 'trimestre', 'codice_descrizione_attivita']
         
         # Raggruppamento dei dati e conteggio dei servizi
         df_grouped = self.dataset.groupby(cols_grouped).size().reset_index(name='numero_servizi')
+        logging.info("Dati raggruppati per 'anno', 'trimestre', e 'codice_descrizione_attivita'.")
         
         # Rimozione della colonna 'anno' per calcolare l'incremento per ciascun gruppo
         df_cols_no_anno = cols_grouped.copy()
@@ -43,11 +67,14 @@ class FeatureExtractor:
         self.dataset = pd.merge(self.dataset, df_grouped[cols_grouped + new_cols],
                                 on=cols_grouped, how='left')
 
+        logging.info("Incrementi percentuali e numero servizi aggiunti al dataset.")
+
     def add_trimestre_column(self):
         """
         Aggiunge una colonna che indica il trimestre di erogazione del servizio,
         gestendo correttamente le differenze di fuso orario.
         """
+        logging.info("Aggiunta della colonna 'trimestre' al dataset.")
         # Assicuriamoci che la colonna 'data_erogazione' sia in formato datetime e UTC
         self.dataset['data_erogazione'] = pd.to_datetime(self.dataset['data_erogazione'], utc=True)
         
@@ -57,24 +84,11 @@ class FeatureExtractor:
         # Creiamo una nuova colonna con il trimestre di erogazione del servizio
         self.dataset['trimestre'] = self.dataset['data_erogazione'].dt.to_period('T')
 
-    def preprocess_data(self):
-        """
-        Preprocessa i dati per l'analisi, convertendo le date e creando nuove colonne per anno e trimestre.
-        """
-        # Conversione della colonna 'data_erogazione' in datetime e gestione dei fusi orari
-        self.dataset['data_erogazione'] = pd.to_datetime(self.dataset['data_erogazione'], utc=True, errors='coerce')
-        
-        if self.dataset['data_erogazione'].isnull().any():
-            print("Warning: Ci sono valori mancanti in 'data_erogazione'.")
-        
-        # Creazione delle colonne 'anno' e 'trimestre'
-        self.dataset['anno'] = self.dataset['data_erogazione'].dt.year
-        self.dataset['trimestre'] = ((self.dataset['data_erogazione'].dt.month - 1) // 3) + 1
-
     def compute_numero_servizi(self):
         """
         Calcola il numero di servizi per anno, trimestre e codice_descrizione_attivita.
         """
+        logging.info("Calcolo del numero di servizi per anno, trimestre e codice_descrizione_attivita.")
         # Raggruppamento per anno, trimestre e codice_descrizione_attivita
         cols_grouped = ['anno', 'trimestre', 'codice_descrizione_attivita']
         df_grouped = self.dataset.groupby(cols_grouped).size().reset_index(name='numero_servizi')
@@ -86,6 +100,7 @@ class FeatureExtractor:
         Crea e salva i grafici della distribuzione degli incrementi e delle categorie di incremento,
         e l'andamento trimestrale delle teleassistenze.
         """
+        logging.info("Inizio della creazione dei grafici.")
         output_dir = 'graphs'
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
@@ -138,12 +153,14 @@ class FeatureExtractor:
         plt.tight_layout()
         plt.savefig(os.path.join(output_dir, 'combined_plot.png'))
         plt.close()
+        logging.info(f"Grafici salvati con successo in '{output_dir}'.")
 
     def run_analysis(self):
         """
         Esegue l'intera pipeline di analisi: preprocessa i dati, calcola gli incrementi percentuali,
         aggiunge la colonna del trimestre, e genera i grafici richiesti.
         """
+        logging.info("Inizio dell'analisi dei dati.")
         # Preprocessing dei dati
         self.preprocess_data()
         
@@ -155,3 +172,4 @@ class FeatureExtractor:
         
         # Generazione e salvataggio dei grafici
         self.plot_graph()
+        logging.info("Analisi completata.")

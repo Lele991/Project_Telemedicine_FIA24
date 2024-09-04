@@ -98,7 +98,7 @@ def handle_missing_values(dataset, group_by_column: str, target_column: str, str
     logging.info(f'Handle Missing Values: Riempiti {num_missing} valori mancanti nella colonna {target_column} usando la strategia {strategy}.')
     return dataset
 
-def update_dataset_with_outliers(dataset, contamination=0.05, action='mark'):
+def update_dataset_with_outliers(dataset, contamination=0.05, action='remove'):
     """
     Identifica e gestisce gli outlier usando un approccio ibrido che combina Isolation Forest e Local Outlier Factor.
     

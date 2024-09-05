@@ -82,7 +82,7 @@ class FeatureExtractor:
         self.dataset['data_erogazione'] = self.dataset['data_erogazione'].dt.tz_localize(None)
         
         # Creiamo una nuova colonna con il trimestre di erogazione del servizio
-        self.dataset['trimestre'] = self.dataset['data_erogazione'].dt.to_period('T')
+        self.dataset['trimestre'] = self.dataset['data_erogazione'].dt.to_period('Q')
 
     def compute_numero_servizi(self):
         """

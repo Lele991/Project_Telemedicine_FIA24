@@ -65,13 +65,13 @@ class FeatureSelection:
         logging.info("Matrice di correlazione creata con successo")
         return pd.DataFrame(matrix, index=self.categorical_columns, columns=self.categorical_columns)
 
-    def remove_perfectly_correlated_features(self, corr_matrix):
-        logging.info("Rimozione delle colonne con correlazione perfetta (1.0)")
+    def remove_perfectly_correlated_features(self, corr_matrix, threshold=1.0):
+        logging.info(f"Rimozione delle colonne con correlazione perfetta ({threshold})")
         to_drop = set()
 
         for i in range(len(corr_matrix.columns)):
             for j in range(i):
-                if corr_matrix.iloc[i, j] == 1.0:
+                if corr_matrix.iloc[i, j] == threshold:
                     col1 = corr_matrix.columns[i]
                     col2 = corr_matrix.columns[j]
                     
@@ -168,7 +168,7 @@ class FeatureSelection:
             updated_corr_matrix = self.create_correlation_matrix()
 
             # Rimuove le colonne altamente correlate
-            self.remove_highly_correlated_features(updated_corr_matrix, threshold)
+            self.remove_perfectly_correlated_features(updated_corr_matrix, threshold)
         
         # Crea una nuova matrice di correlazione dopo la rimozione delle colonne
         final_corr_matrix = self.create_correlation_matrix()

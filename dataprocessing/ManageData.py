@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import logging
 
+from dataprocessing.Clustering import Clustering
 from dataprocessing.FeatureSelection import FeatureSelection
 from dataprocessing.FeatureExtractor import FeatureExtractor
 from dataprocessing.manage import DataCleaner, DataFix
@@ -40,6 +41,22 @@ class ManageData:
         self.dataset.replace({'None': np.nan, None: np.nan}, inplace=True)
         logging.info("Sostituiti i valori 'None' e None con NaN nel dataset.")
 
+    def log_missing_values(self):
+        """Stampa un log con le colonne che contengono valori mancanti con annesso valore."""
+        missing_values = self.dataset.isnull().sum()
+        total_missing = missing_values.sum()
+        if total_missing > 0:
+            logging.info(f"Valori mancanti trovati in totale: {total_missing}")
+            missing_by_column = missing_values[missing_values > 0]
+            for col, missing_count in missing_by_column.items():
+                logging.info(f"La colonna '{col}' ha {missing_count} valori mancanti.")
+
+    def save_dataset(self):
+        file_path = 'data/extractor_dataset.parquet'
+        """Salva il dataset in formato Parquet."""
+        self.dataset.to_parquet(file_path, index=False)
+        logging.info(f"Dataset salvato in formato Parquet: {file_path}")
+
     def clean_data(self):
         """Esegue una pulizia completa dei dati."""
         df = self.dataset
@@ -66,9 +83,6 @@ class ManageData:
         # Aggiunge la fascia d'età
         df = DataFix.add_fascia_eta_column(df)
 
-        # Gestisce i valori mancanti nel dataset, riempiendo i valori mancanti in base alla media
-        #df = DataCleaner.handle_missing_values(df)
-
         # Identifica e gestisce gli outlier
         df = DataCleaner.update_dataset_with_outliers(df)
 
@@ -90,6 +104,9 @@ class ManageData:
                    'tipologia_professionista_sanitario']
         df = DataCleaner.remove_columns(df, columns)
 
+        # Gestisce i valori mancanti nel dataset, riempiendo i valori mancanti in base alla media
+        df = DataCleaner.handle_missing_values(df)
+
         # Imposta il dataset pulito
         self.set_dataset(df)
         logging.info("Pulizia completa del dataset eseguita con successo.")
@@ -99,8 +116,22 @@ class ManageData:
         df = featureExtractor.get_dataset()
         self.set_dataset(df)
 
-        featureSelection = FeatureSelection(df)
+        self.log_missing_values()
+
+        featureSelection = FeatureSelection(self.dataset)
         featureSelection.execute_feature_selection(threshold=0.85,remove_others_colum_by_threshold=True)
         df = featureSelection.get_dataset()
         self.set_dataset(df)
+
+        #TODO: dopo aver risolto la problematica che mancano 7000 righe con valore, rimuovere
+        columns = ['incremento_percentuale',]
+        df = DataCleaner.remove_columns(df, columns)
+        ##
+
+        self.set_dataset(df)
+        self.log_missing_values()
+        self.save_dataset()
+
+        clustering = Clustering(self.dataset, n_clusters=4, algorithm='kmeans', scale_data=True, target_column='fascia_eta')
+        clustering.run_full_clustering_analysis()
 

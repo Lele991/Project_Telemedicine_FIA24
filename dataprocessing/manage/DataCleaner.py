@@ -69,34 +69,33 @@ def remove_columns(dataset, columns):
     logging.info(f'Remove Columns: Rimosse le colonne {columns_to_remove}.')
     return dataset
 
-def handle_missing_values(dataset, group_by_column: str, target_column: str, strategy='mean'):
+def handle_missing_values(dataset, strategy='mean'):
     """
     Gestisce i valori mancanti nel dataset, riempiendo i valori mancanti in base alla media (o altra misura) 
-    calcolata per gruppo, ad esempio per 'codice_descrizione_attivita'.
 
     Parametri:
-    group_by_column (str): La colonna utilizzata per raggruppare i dati (es. 'codice_descrizione_attivita').
-    target_column (str): La colonna in cui si vogliono riempire i valori mancanti.
     strategy (str): La strategia di riempimento ('mean', 'median', 'mode'). Default è 'mean'.
     """
-    if group_by_column not in dataset.columns or target_column not in dataset.columns:
-        logging.error(f"Le colonne '{group_by_column}' e/o '{target_column}' devono essere presenti nel dataset.")
-        return dataset
 
-    if strategy == 'mean':
-        fill_values = dataset.groupby(group_by_column)[target_column].transform('mean')
-    elif strategy == 'median':
-        fill_values = dataset.groupby(group_by_column)[target_column].transform('median')
-    elif strategy == 'mode':
-        fill_values = dataset.groupby(group_by_column)[target_column].transform(lambda x: x.mode()[0] if not x.mode().empty else np.nan)
+    # Crea un oggetto SimpleImputer
+    imputer = SimpleImputer(strategy=strategy)
+
+    # Calcola la media per ciascun gruppo
+    dataset_imputed = dataset.copy()
+    missing_values = dataset_imputed.isnull().sum()
+    total_missing = missing_values.sum()
+    if total_missing > 0:
+        logging.info(f"Handle Missing Values: Valori mancanti trovati in totale: {total_missing}")
+        for col in dataset.columns:
+            if dataset[col].isnull().any():
+                missed_values = dataset[col].isnull().sum()
+                logging(info=f'Handle Missing Values: Gestione dei valori mancanti per la colonna "{col}" con valori nulli "{missed_values}".')
+                dataset_imputed[col] = imputer.fit_transform(dataset[[col]])
+        logging.info(f'Handle Missing Values: Valori mancanti gestiti con strategia "{strategy}".')
     else:
-        logging.error("Strategy non riconosciuta. Usa 'mean', 'median' o 'mode'.")
-        return dataset
+        logging.info("Handle Missing Values: Nessun valore mancante trovato.")
 
-    num_missing = dataset[target_column].isnull().sum()
-    dataset[target_column].fillna(fill_values, inplace=True)
-    logging.info(f'Handle Missing Values: Riempiti {num_missing} valori mancanti nella colonna {target_column} usando la strategia {strategy}.')
-    return dataset
+    return dataset_imputed
 
 def update_dataset_with_outliers(dataset, contamination=0.05, action='remove'):
     """

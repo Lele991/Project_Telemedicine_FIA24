@@ -11,6 +11,10 @@ from dataprocessing.manage import DataCleaner, DataFix
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 class ManageData:
+    '''
+    ggjgjgjg
+    hjhhhj
+    '''
     def __init__(self, dataset, path_province, path_comuni, missing_threshold=0.6):
         self.dataset = dataset
         self.path_province = path_province

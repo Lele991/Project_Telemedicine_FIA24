@@ -62,11 +62,24 @@ def remove_columns(dataset, columns):
     Rimuovi dal dataset le colonne specificate.
 
     Parametri:
+    dataset (pd.DataFrame): Il DataFrame da cui rimuovere le colonne.
     columns (list): L'elenco delle colonne da rimuovere.
+    
+    Ritorna:
+    pd.DataFrame: Il dataset aggiornato con le colonne rimosse.
     """
+    # Seleziona solo le colonne effettivamente presenti nel dataset
     columns_to_remove = [col for col in columns if col in dataset.columns]
-    dataset.drop(columns=columns_to_remove, inplace=True)
-    logging.info(f'Remove Columns: Rimosse le colonne {columns_to_remove}.')
+
+    if columns_to_remove:
+        # Crea una copia del dataset con le colonne rimosse
+        dataset.drop(columns=columns_to_remove, inplace=True)
+
+        logging.info(f'Remove Columns: Rimosse le colonne {columns_to_remove}.')
+    else:
+        logging.info('Remove Columns: Nessuna colonna da rimuovere trovata.')
+
+    # Restituisce il dataset modificato
     return dataset
 
 def handle_missing_values(dataset, strategy='mean'):

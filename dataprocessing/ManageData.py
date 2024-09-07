@@ -11,10 +11,6 @@ from dataprocessing.manage import DataCleaner, DataFix
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 class ManageData:
-    '''
-    ggjgjgjg
-    hjhhhj
-    '''
     def __init__(self, dataset, path_province, path_comuni, missing_threshold=0.6):
         self.dataset = dataset
         self.path_province = path_province
@@ -27,7 +23,7 @@ class ManageData:
     def set_dataset(self, dataset):
         self.dataset = dataset
 
-    def replace_none_with_nan(self):
+    def replace_none_with_nan(self, dataset):
         """
         Sostituisce i valori 'None' e None con NaN nel DataFrame.
         
@@ -38,16 +34,16 @@ class ManageData:
         dataset: Il DataFrame con 'None' e None sostituiti con NaN.
         """
         # Verifica che il dataset sia un DataFrame
-        if not isinstance(self.dataset, pd.DataFrame):
+        if not isinstance(dataset, pd.DataFrame):
             raise TypeError("Il parametro deve essere un DataFrame di pandas.")
         
         # Sostituisce 'None' e None con NaN
-        self.dataset.replace({'None': np.nan, None: np.nan}, inplace=True)
+        dataset.replace({'None': np.nan, None: np.nan}, inplace=True)
         logging.info("Sostituiti i valori 'None' e None con NaN nel dataset.")
 
-    def log_missing_values(self):
+    def log_missing_values(self, dataset):
         """Stampa un log con le colonne che contengono valori mancanti con annesso valore."""
-        missing_values = self.dataset.isnull().sum()
+        missing_values = dataset.isnull().sum()
         total_missing = missing_values.sum()
         if total_missing > 0:
             logging.info(f"Valori mancanti trovati in totale: {total_missing}")
@@ -55,18 +51,24 @@ class ManageData:
             for col, missing_count in missing_by_column.items():
                 logging.info(f"La colonna '{col}' ha {missing_count} valori mancanti.")
 
-    def save_dataset(self):
+    def save_dataset(self, dataset):
         file_path = 'data/extractor_dataset.parquet'
         """Salva il dataset in formato Parquet."""
-        self.dataset.to_parquet(file_path, index=False)
+        dataset.to_parquet(file_path, index=False)
         logging.info(f"Dataset salvato in formato Parquet: {file_path}")
+
+    def print_columns(self, dataset):
+        """Stampa le colonne del dataset."""
+        logging.info(f"Colonne presenti nel dataset: {dataset.columns.tolist()}")
 
     def clean_data(self):
         """Esegue una pulizia completa dei dati."""
-        df = self.dataset
-        
-        # Rimuove duplicati
-        df = DataCleaner.remove_duplicates(df)
+        logging.info("Inizio della pulizia completa del dataset.")
+
+        df = self.dataset.copy()
+
+        # Sostituisco i valori None(nulli) con "NaN" nel Dataframe
+        self.replace_none_with_nan(df)
 
         # Rimuove righe dove 'data_disdetta' non è nullo
         df = DataCleaner.remove_disdette(df)
@@ -74,9 +76,24 @@ class ManageData:
         # Fix province e comuni
         df = DataFix.fill_province_comuni(df, self.path_province, self.path_comuni)
 
+        # Rimuove duplicati
+        df = DataCleaner.remove_duplicates(df)
+
+        # Rimuove colonne non più necessarie
+        columns = ['data_disdetta']
+        df = DataCleaner.remove_columns(df, columns)
+
         # Rimuove colonne con valori mancanti sopra la soglia
         df = DataCleaner.remove_missing_values_rows(df, self.missing_threshold)
-        
+
+        logging.info("Fine della pulizia dei dati.")
+        return df
+    
+    def run_analysis(self):
+        """Esegue l'analisi completa dei dati."""
+        logging.info("Inizio dell'analisi completa dei dati.")
+        df = self.clean_data()
+
         # Aggiunge durata della visita e riempie le durate mancanti
         df = DataFix.add_durata_visita(df)
         df = DataFix.fill_durata_visita(df)
@@ -90,6 +107,8 @@ class ManageData:
         # Identifica e gestisce gli outlier
         df = DataCleaner.update_dataset_with_outliers(df)
 
+        print(df.info())
+
         # Rimuove colonne non più necessarie
         #columns = ['ora_inizio_erogazione', 'ora_fine_erogazione',
         #           'id_prenotazione', 'id_paziente', 'regione_residenza', 'codice_regione_residenza',
@@ -99,43 +118,87 @@ class ManageData:
         #           'tipologia_struttura_erogazione', 'id_professionista_sanitario',
         #           'tipologia_professionista_sanitario', 'codice_tipologia_professionista_sanitario']
 
-        columns = ['ora_inizio_erogazione', 'ora_fine_erogazione',
-                   'id_prenotazione', 'id_paziente', 'regione_residenza', 'codice_regione_residenza',
-                   'asl_residenza', 'provincia_residenza',
-                   'comune_residenza', 'codice_comune_residenza', 'descrizione_attivita',
-                   'data_contatto', 'regione_erogazione', 'asl_erogazione', 'provincia_erogazione',
-                   'id_professionista_sanitario',
-                   'tipologia_professionista_sanitario']
+        columns = ['id_paziente', 'tipologia_servizio', 'ora_inizio_erogazione', 'ora_fine_erogazione','data_contatto',
+                   'regione_residenza', 'provincia_residenza', 'comune_residenza',
+                   'descrizione_attivita', 'regione_erogazione', 'asl_erogazione', 'provincia_erogazione',
+                   'tipologia_professionista_sanitario',
+                   'regione_residenza', 'struttura_erogazione', 'tipologia_struttura_erogazione',
+                   'asl_residenza', 'outlier', 'eta_paziente']
         df = DataCleaner.remove_columns(df, columns)
 
         # Gestisce i valori mancanti nel dataset, riempiendo i valori mancanti in base alla media
         df = DataCleaner.handle_missing_values(df)
 
         # Imposta il dataset pulito
-        self.set_dataset(df)
         logging.info("Pulizia completa del dataset eseguita con successo.")
 
-        featureExtractor = FeatureExtractor(self.dataset)
+        self.print_columns(df)
+        print(df.info())
+        print(df)
+
+        # Colonne presenti nel dataset:
+        # ['id_prenotazione', 'sesso', 'codice_regione_residenza',
+        #  'codice_asl_residenza', 'codice_provincia_residenza',
+        #  'codice_comune_residenza', 'codice_descrizione_attivita',
+        #  'codice_regione_erogazione', 'codice_asl_erogazione', 'codice_provincia_erogazione',
+        #  'codice_struttura_erogazione', 'codice_tipologia_struttura_erogazione',
+        #  'id_professionista_sanitario', 'codice_tipologia_professionista_sanitario',
+        #  'data_erogazione', 'durata_visita', 'fascia_eta']
+
+        columns = ['id_prenotazione', 'data_erogazione', 'id_professionista_sanitario']
+        featureSelection = FeatureSelection(df, categorical_columns=None, exclude_classes=columns)
+        featureSelection.execute_feature_selection(threshold=0.85, remove_others_colum_by_threshold=True)
+        featureSelection.get_dataset()
+        get_column_to_drop = featureSelection.get_colum_to_drop()
+        
+        self.print_columns(df)
+        print(df.info())
+        print(df)
+
+        # Colonne tipicamente rimosse:
+        # ['codice_provincia_erogazione', 'codice_provincia_residenza', 'codice_asl_erogazione',
+        #  'codice_asl_residenza', 'codice_struttura_erogazione', 'id_professionista_sanitario',
+        #  'codice_comune_residenza', 'codice_regione_erogazione', 'codice_tipologia_professionista_sanitario']
+        df = DataCleaner.remove_columns(df, get_column_to_drop)
+
+        self.print_columns(df)
+        print(df.info())
+        print(df)
+
+        # Colonne presenti nel dataset
+        # ['id_prenotazione', 'sesso', 'codice_regione_residenza',
+        #  'codice_descrizione_attivita', 'codice_tipologia_struttura_erogazione',
+        #  'id_professionista_sanitario', 'codice_tipologia_professionista_sanitario',
+        #  'data_erogazione', 'durata_visita', 'fascia_eta']
+
+        featureExtractor = FeatureExtractor(df)
         featureExtractor.run_analysis()
         df = featureExtractor.get_dataset()
-        self.set_dataset(df)
 
-        self.log_missing_values()
+        self.print_columns(df)
+        print(df.info())
+        print(df)
 
-        featureSelection = FeatureSelection(self.dataset)
-        featureSelection.execute_feature_selection(threshold=0.85,remove_others_colum_by_threshold=True)
-        df = featureSelection.get_dataset()
-        self.set_dataset(df)
+        self.log_missing_values(df)
+        self.save_dataset(df)
 
-        #TODO: dopo aver risolto la problematica che mancano 7000 righe con valore, rimuovere
-        columns = ['incremento_percentuale',]
-        df = DataCleaner.remove_columns(df, columns)
-        ##
+        colonne_da_convertire = ['sesso', 'fascia_eta', 'trimestre', 'incremento_classificato']
+        df = DataFix.colonne_to_category(df, colonne_da_convertire)
 
-        self.set_dataset(df)
-        self.log_missing_values()
-        self.save_dataset()
+        self.print_columns(df)
+        print(df.info())
+        print(df)
 
-        clustering = Clustering(self.dataset, n_clusters=4, algorithm='kmeans', scale_data=True, target_column='fascia_eta')
-        clustering.run_full_clustering_analysis()
+        # Colonne presenti nel dataset
+        # ['id_prenotazione', 'sesso', 'codice_regione_residenza',
+        #  'codice_descrizione_attivita', 'codice_tipologia_struttura_erogazione',
+        #  'id_professionista_sanitario', 'codice_tipologia_professionista_sanitario',
+        #  'data_erogazione', 'durata_visita', 'fascia_eta', 'trimestre',
+        #  'anno', 'incremento_classificato']        
 
+        # features = ['asl_residenza', 'asl_erogazione', 'tipologia_professionista_sanitario'] 
+        clustering = Clustering(df)
+        # columns_to_remove = ['id_prenotazione', 'data_erogazione', 'trimestre', 'id_professionista_sanitario']
+        columns_to_remove = ['id_prenotazione', 'data_erogazione', 'trimestre', 'id_professionista_sanitario']
+        use_one_hot_encoding = False  # Se vuoi usare One-Hot Encoding
+        clustering.run_clustering(df, label_column='incremento_classificato', columns_to_remove=columns_to_remove, use_one_hot_encoding=use_one_hot_encoding)

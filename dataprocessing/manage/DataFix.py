@@ -3,6 +3,8 @@ import numpy as np
 import pandas as pd
 import logging
 
+from sklearn.preprocessing import MinMaxScaler
+
 # Configurazione del logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -148,6 +150,7 @@ def add_durata_visita(dataset):
 
     dataset['ora_inizio_erogazione'] = pd.to_datetime(dataset['ora_inizio_erogazione'], utc=True, errors='coerce')
     dataset['ora_fine_erogazione'] = pd.to_datetime(dataset['ora_fine_erogazione'], utc=True, errors='coerce')
+    dataset['data_erogazione'] = pd.to_datetime(dataset['data_erogazione'], utc=True, errors='coerce')
 
     dataset['durata_visita'] = (dataset['ora_fine_erogazione'] - dataset['ora_inizio_erogazione']).dt.total_seconds() / 60
 
@@ -214,6 +217,11 @@ def fill_durata_visita(dataset):
     num_filled_durations = dataset['durata_visita'].isnull().sum()
     logging.info(f'Fill Durata Visita: Riempite le durate mancanti. {num_filled_durations} righe hanno ancora durate mancanti.')
 
+    if num_filled_durations > 0:
+        logging.warning("Fill Durata Visita: Alcune durate della visita non sono state riempite. Controllare i dati.")
+    else:
+        dataset['durata_visita'] = dataset['durata_visita'].astype('int64')
+
     return dataset
 
 def add_fascia_eta_column(dataset):
@@ -238,7 +246,38 @@ def add_fascia_eta_column(dataset):
     
     # Restituisce una nuova colonna (Serie) senza modificare direttamente il dataset
     dataset['fascia_eta'] = dataset['eta_paziente'].apply(determina_fascia_eta)
+
+    # Normalizza i valori della colonna 'eta_paziente' tra 0 e 1
+    scaler = MinMaxScaler()
+    dataset['eta_paziente'] = scaler.fit_transform(dataset[['eta_paziente']])
+
     logging.info("Generata la colonna 'fascia_eta' basata sull'età del paziente.")
     return dataset
 
 
+import pandas as pd
+
+def colonne_to_category(df, colonne):
+    """
+    Converte le colonne specificate in 'category' per ottimizzare la memoria.
+    
+    Parametri:
+    - df: Il DataFrame da ottimizzare.
+    - colonne: Lista di nomi delle colonne da convertire in 'category'.
+    
+    Ritorna:
+    - Il DataFrame con le colonne specificate convertite in 'category'.
+    """
+    for colonna in colonne:
+        if colonna in df.columns:
+            df[colonna] = df[colonna].astype('category')
+            print(f"Colonna '{colonna}' convertita in 'category'.")
+        else:
+            print(f"Colonna '{colonna}' non trovata nel DataFrame.")
+    
+    # Controlla se 'codice_struttura_erogazione' può essere convertita in int
+    if 'codice_struttura_erogazione' in df.columns and df['codice_struttura_erogazione'].apply(float.is_integer).all():
+        df['codice_struttura_erogazione'] = df['codice_struttura_erogazione'].astype('int64')
+        print("Colonna 'codice_struttura_erogazione' convertita in 'int64'.")
+
+    return df

@@ -25,11 +25,8 @@ def main():
 
     data = ManageData(df, file_path_province, file_path_comuni, missing_threshold)
 
-    #Sostituisco i valori None(nulli) con "NaN" nel Dataframe
-    data.replace_none_with_nan()
-
     #Eseguo una pulizia dei dati
-    data.clean_data()
+    data.run_analysis()
     
     #Definisco il metodo per recuperare il dataset dal file dei dati
     df = data.get_dataset()

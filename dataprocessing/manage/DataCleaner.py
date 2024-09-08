@@ -110,20 +110,18 @@ def handle_missing_values(dataset, strategy='mean'):
 
     return dataset_imputed
 
-def update_dataset_with_outliers(dataset, contamination=0.05, action='remove'):
+def update_dataset_with_outliers(dataset, relevant_columns = ['eta_paziente', 'durata_visita', 'codice_descrizione_attivita'], contamination=0.05, action='remove'):
     """
     Identifica e gestisce gli outlier usando un approccio ibrido che combina Isolation Forest e Local Outlier Factor.
     
     Parametri:
     contamination (float): La percentuale prevista di outlier nel dataset.
     action (str): Azione da intraprendere sugli outlier ('mark' per segnare, 'remove' per rimuovere).
+    relevant_columns (list): Le colonne rilevanti per l'identificazione degli outlier.
     """
     n_estimators = 100
     max_samples = 'auto'
     n_jobs = -1  # Usa tutti i core disponibili
-    
-    # Considera un subset di colonne rilevanti
-    relevant_columns = ['eta_paziente', 'durata_visita', 'codice_descrizione_attivita']
 
     # Codifica le variabili categoriali in numeriche
     dataset_encoded = pd.get_dummies(dataset[relevant_columns], drop_first=True)
@@ -143,7 +141,8 @@ def update_dataset_with_outliers(dataset, contamination=0.05, action='remove'):
     dataset['outlier'] = outliers
 
     # Considera età <= 0 o >= 100 come outlier
-    dataset.loc[(dataset['eta_paziente'] <= 0) | (dataset['eta_paziente'] >= 100), 'outlier'] = -1
+    if('eta_paziente' in relevant_columns):
+        dataset.loc[(dataset['eta_paziente'] <= 0) | (dataset['eta_paziente'] >= 100), 'outlier'] = -1
 
     num_outliers = (dataset['outlier'] == -1).sum()
     

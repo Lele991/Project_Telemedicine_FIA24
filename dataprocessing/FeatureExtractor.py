@@ -70,35 +70,43 @@ class FeatureExtractor:
         return grouped
 
 
-    def classify_increment(self, value):
+    def determine_growth_category(self, variazione_percentuale):
         """
-        Classifica gli incrementi percentuali in base a soglie predefinite.
+        Determina la categoria di crescita percentuale in base alle soglie predefinite
+        con lo stesso comportamento di 'classify_increment'.
         """
-        if value <= 5 and value >= 0:
-            return 'constant_increment'
-        elif value <= 15:
-            return 'low_increment'
-        elif value <= 40:
-            return 'medium_increment'
-        elif value > 40:
-            return 'high_increment'
-        else:
-            return 'decrement'
+        variazione_percentuale = round(variazione_percentuale, 2)
+        soglie = {
+            'crescita_costante': (0, 5),
+            'crescita_bassa': (5, 15),
+            'crescita_moderata': (15, 40),
+            'crescita_alta': (40, float('inf')),
+            'decrescita': (-float('inf'), 0)
+        }
+        
+        for categoria, (limite_inferiore, limite_superiore) in soglie.items():
+            if limite_inferiore <= variazione_percentuale <= limite_superiore:
+                return categoria
+        return 'decrescita'
 
-    def apply_classification(self, grouped):
+    def apply_growth_categorization(self, grouped):
         """
-        Applica la classificazione degli incrementi percentuali e unisce i risultati al dataset originale.
+        Applica la categorizzazione della crescita percentuale e unisce i risultati al dataset originale.
         """
-        logging.info("Inizio della classificazione degli incrementi percentuali.")
+        logging.info("Inizio della categorizzazione della crescita percentuale.")
 
-        # Applica la classificazione
-        grouped['incremento_classificato'] = grouped['incremento_percentuale'].apply(self.classify_increment)
+        # Applica la categorizzazione
+        grouped['incremento_classificato'] = grouped['incremento_percentuale'].apply(self.determine_growth_category)
 
-        # Unione dei risultati al dataset originale
-        self.dataset = pd.merge(self.dataset, grouped[['anno', 'trimestre', 'codice_descrizione_attivita', 'incremento_classificato']],
-                                on=['anno', 'trimestre', 'codice_descrizione_attivita'], how='left')
+        # Unisce i risultati al dataset originale
+        self.dataset = pd.merge(
+            self.dataset, 
+            grouped[['anno', 'trimestre', 'codice_descrizione_attivita', 'incremento_classificato']],
+            on=['anno', 'trimestre', 'codice_descrizione_attivita'], 
+            how='left'
+        )
 
-        logging.info("Classificazione completata e aggiunta al dataset.")
+        logging.info("Categorizzazione completata e aggiunta al dataset.")
         return self.dataset
 
     def plot_graphs(self, grouped):
@@ -181,7 +189,7 @@ class FeatureExtractor:
         self.plot_graphs(grouped)
 
         # Classificazione degli incrementi
-        self.apply_classification(grouped)
+        self.apply_growth_categorization(grouped)
 
         print(self.dataset)
 

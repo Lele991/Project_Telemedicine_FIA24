@@ -32,8 +32,7 @@ class FeatureExtractor:
             logging.warning("Ci sono valori mancanti o non validi in 'data_erogazione'. Saranno ignorati nel calcolo.")
         
         # Rimuove il fuso orario prima di convertire a trimestre
-        self.dataset['trimestre'] = self.dataset['data_erogazione'].dt.tz_localize(None).dt.to_period('Q')
-        #self.dataset['trimestre'] = self.dataset['data_erogazione'].dt.year.astype(str) + 'T' + self.dataset['data_erogazione'].dt.quarter.astype(str)
+        self.dataset['trimestre'] = self.dataset['data_erogazione'].dt.year.astype(str) + 'T' + self.dataset['data_erogazione'].dt.quarter.astype(str)
         
         # Creazione delle colonne 'anno'
         self.dataset['anno'] = self.dataset['data_erogazione'].dt.year
@@ -140,12 +139,15 @@ class FeatureExtractor:
         # Generazione delle etichette personalizzate per trimestre e anno
         labels = []
         for period in trend.index:
-            year = period.year
-            quarter = period.quarter
-            if quarter == 1:
-                labels.append(f"{year}")
+            # Estrarre l'anno e il trimestre dalla stringa 'YYYYTX'
+            year = period[:4]  # I primi 4 caratteri rappresentano l'anno
+            quarter = period[5]  # Il 6° carattere rappresenta il trimestre
+            
+            # Personalizzazione dell'etichetta
+            if quarter == '1':
+                labels.append(f"{year}")  # Mostra solo l'anno se è il primo trimestre
             else:
-                labels.append(f"T{quarter}")
+                labels.append(f"T{quarter}")  # Mostra 'T' seguito dal numero del trimestre per T2, T3, T4
 
         # Plot del trend con le etichette personalizzate
         plt.plot(trend.index.astype(str), trend.values, marker='o', linestyle='-')

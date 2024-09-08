@@ -105,7 +105,8 @@ class ManageData:
         df = DataFix.add_fascia_eta_column(df)
 
         # Identifica e gestisce gli outlier
-        df = DataCleaner.update_dataset_with_outliers(df)
+        relevant_columns = ['eta_paziente', 'durata_visita', 'codice_descrizione_attivita'] # Subset di colonne rilevanti
+        df = DataCleaner.update_dataset_with_outliers(df, relevant_columns)
 
         print(df.info())
 
@@ -182,13 +183,6 @@ class ManageData:
         self.log_missing_values(df)
         self.save_dataset(df)
 
-        #colonne_da_convertire = ['sesso', 'fascia_eta', 'trimestre', 'incremento_classificato']
-        #df = DataFix.colonne_to_category(df, colonne_da_convertire)
-
-        #self.print_columns(df)
-        #print(df.info())
-        #print(df)
-
         # Colonne presenti nel dataset
         # ['id_prenotazione', 'sesso', 'codice_regione_residenza',
         #  'codice_descrizione_attivita', 'codice_tipologia_struttura_erogazione',
@@ -196,12 +190,32 @@ class ManageData:
         #  'data_erogazione', 'durata_visita', 'fascia_eta', 'trimestre',
         #  'anno', 'incremento_classificato']        
 
-        # features = ['asl_residenza', 'asl_erogazione', 'tipologia_professionista_sanitario'] 
-       # clustering = Clustering(df)
         # columns_to_remove = ['id_prenotazione', 'data_erogazione', 'trimestre', 'id_professionista_sanitario']
-        columns_to_remove = ['id_prenotazione', 'data_erogazione', 'id_professionista_sanitario']
-        use_one_hot_encoding = False  # Se vuoi usare One-Hot Encoding
-        # clustering.run_clustering(df, label_column='incremento_classificato', columns_to_remove=columns_to_remove, use_one_hot_encoding=use_one_hot_encoding)
+        columns_to_remove = ['id_prenotazione', 'data_erogazione', 'id_professionista_sanitario', 'durata_visita']
+        use_one_hot_encoding = True  # Se vuoi usare One-Hot Encoding
         # Creazione e esecuzione del clustering
-        clustering = Clustering(n_clusters=4)
+        clustering = Clustering(n_clusters=4, use_one_hot=use_one_hot_encoding)
         clustering.run_clustering(df, label_column='incremento_classificato', excluded_columns=columns_to_remove)
+
+
+
+'''
+Prove effettuate:
+
+1)
+columns_to_remove = ['id_prenotazione', 'data_erogazione', 'id_professionista_sanitario', 'durata_visita']
+use_one_hot_encoding = True
+Clustering KModes completato. Numero di Cluster: 4, Silhouette Score Medio: 0.7097433217724045, Purezza: 0.7245868316394167
+
+2)
+columns_to_remove = ['id_prenotazione', 'data_erogazione', 'id_professionista_sanitario', 'durata_visita']
+use_one_hot_encoding = False
+Clustering KModes completato. Numero di Cluster: 4, Silhouette Score Medio: 0.6973225099550656., Purezza: 0.5667719840919134
+
+3)
+attivando anche il rimuovi outliers nel preprocess_data
+columns_to_remove = ['id_prenotazione', 'data_erogazione', 'id_professionista_sanitario', 'durata_visita']
+use_one_hot_encoding = False
+
+
+'''

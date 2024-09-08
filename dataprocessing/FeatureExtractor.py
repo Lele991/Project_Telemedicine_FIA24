@@ -143,23 +143,26 @@ class FeatureExtractor:
         # Grafico dell'andamento trimestrale delle teleassistenze
         plt.subplot(2, 1, 2)
         trend = self.dataset.groupby('trimestre').size()
-        
+
+        # Mappare i trimestri a numeri interi progressivi
+        trimestre_mapping = {period: i for i, period in enumerate(trend.index, 1)}
+
         # Generazione delle etichette personalizzate per trimestre e anno
         labels = []
         for period in trend.index:
-            # Estrarre l'anno e il trimestre dalla stringa 'YYYYTX'
-            year = period[:4]  # I primi 4 caratteri rappresentano l'anno
-            quarter = period[5]  # Il 6° carattere rappresenta il trimestre
+            year = period[:4]  # Prendi i primi 4 caratteri per l'anno
+            quarter = period[5:]  # Prendi tutto dopo il 4° carattere per il trimestre
             
             # Personalizzazione dell'etichetta
             if quarter == '1':
-                labels.append(f"{year}")  # Mostra solo l'anno se è il primo trimestre
+                labels.append(f"{year}")  # Mostra solo l'anno per il primo trimestre
             else:
-                labels.append(f"T{quarter}")  # Mostra 'T' seguito dal numero del trimestre per T2, T3, T4
+                labels.append(f"T{quarter}")  # Mostra 'T' e il numero del trimestre per T2, T3, T4
 
-        # Plot del trend con le etichette personalizzate
-        plt.plot(trend.index.astype(str), trend.values, marker='o', linestyle='-')
-        plt.xticks(ticks=range(len(trend.index)), labels=labels, rotation=45)
+        # Plot del trend con asse x numerico e etichette personalizzate
+        x_values = [trimestre_mapping[period] for period in trend.index]
+        plt.plot(x_values, trend.values, marker='o', linestyle='-')
+        plt.xticks(ticks=x_values, labels=labels, rotation=45)
         plt.title('Andamento delle Teleassistenze per Trimestre')
         plt.xlabel('Periodo (Anno e Trimestre)')
         plt.ylabel('Numero di Teleassistenze')

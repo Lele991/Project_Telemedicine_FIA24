@@ -1,367 +1,235 @@
-import logging
 import os
-import pickle
 import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-from sklearn.cluster import KMeans
-from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import silhouette_score, davies_bouldin_score, silhouette_samples
 from sklearn.decomposition import PCA
+from sklearn.discriminant_analysis import StandardScaler
+from sklearn.preprocessing import LabelEncoder
+from sklearn.metrics import silhouette_score, silhouette_samples
+import numpy as np
+import logging
 from collections import Counter
-
-# Configurazione del logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+from kmodes.kmodes import KModes
 
 class Clustering:
-    def __init__(self, df, n_clusters=4, algorithm='kmeans', columns=None, scale_data=True, target_column=None, max_iter=300):
+    def __init__(self, n_clusters=4):
         """
-        Inizializza la classe con il dataset e i parametri di clustering.
-        target_column: opzionale, usata per calcolare la purezza del clustering.
-        max_iter: numero massimo di iterazioni per l'algoritmo KMeans.
+        Inizializza la classe per eseguire il clustering con KModes.
+        :param n_clusters: Numero di cluster minimo per il KModes. Default = 4.
         """
-        logging.info(f"Inizializzazione della classe di clustering con {algorithm}.")
-        self.df = df.copy()
         self.n_clusters = n_clusters
-        self.algorithm = algorithm
-        self.columns = columns if columns else df.columns.tolist()  # Usa tutte le colonne se non specificato
-        self.scale_data = scale_data
-        self.cluster_labels = None
-        self.preprocessed_df = None
-        self.target_column = target_column  # Colonna target per calcolo della purezza
-        self.max_iter = max_iter
-        self.original_fascia_eta = None  # Salva la colonna 'fascia_eta' originale se presente
+        self.kmodes = None
+        self.labels = None
+        self.silhouette_avg = None
+        self.silhouette_values = None
+        self.transformed_columns = []  # Tiene traccia delle colonne trasformate
 
-    def preprocess_data(self, pca_components=None, remove_outliers=False):
+    def check_null_values(self, dataset):
         """
-        Preprocessa i dati per l'analisi, gestisce le colonne categoriali con encoding e scala i dati numerici.
-        Applica PCA opzionalmente e rimuove outlier se richiesto.
+        Verifica la presenza di righe con valori nulli nel dataset.
+        :param dataset: Dataset da verificare.
+        :return: None
         """
-        logging.info("Inizio preprocessing dei dati.")
-        logging.info(f"Dimensione iniziale del dataset: {self.df.shape}")
-
-        # Filtra per le colonne specificate, se esistono
-        df_cluster = self.df[self.columns] if self.columns else self.df.copy()
-
-        # Seleziona le colonne categoriali e numeriche
-        categorical_columns = df_cluster.select_dtypes(include=['object', 'category']).columns.tolist()
-        numerical_columns = df_cluster.select_dtypes(include=['int64', 'float64']).columns.tolist()
-
-        logging.info(f"Colonne categoriali: {categorical_columns}")
-        logging.info(f"Colonne numeriche: {numerical_columns}")
-
-        # Salva una copia della colonna originale per la purezza (se presente)
-        if 'fascia_eta' in df_cluster.columns:
-            self.original_fascia_eta = df_cluster['fascia_eta'].copy()
-
-        # Imputazione dei valori mancanti
-        if categorical_columns:
-            for col in categorical_columns:
-                mode_value = df_cluster[col].mode()[0]
-                df_cluster[col].fillna(mode_value, inplace=True)
-        
-        if numerical_columns:
-            for col in numerical_columns:
-                mean_value = df_cluster[col].mean()
-                df_cluster[col].fillna(mean_value, inplace=True)
-
-        # One-Hot Encoding delle colonne categoriali
-        if categorical_columns:
-            logging.info(f"Eseguo One-Hot Encoding delle colonne categoriali: {categorical_columns}")
-            df_cluster = pd.get_dummies(df_cluster, columns=categorical_columns, drop_first=False)
-        
-        # Rimozione degli outlier se richiesto
-        if remove_outliers:
-            df_cluster = self.remove_outliers(df_cluster)
-
-        # Scaling delle colonne numeriche
-        if self.scale_data and numerical_columns:
-            scaler = StandardScaler()
-            df_cluster[numerical_columns] = scaler.fit_transform(df_cluster[numerical_columns])
-
-        # Riduzione dimensionale con PCA
-        if pca_components is not None:
-            logging.info(f"Riduzione dimensionale tramite PCA a {pca_components} componenti")
-            pca = PCA(n_components=pca_components)
-            df_cluster = pd.DataFrame(pca.fit_transform(df_cluster), columns=[f'PC{i+1}' for i in range(pca_components)])
-            logging.info(f"Dimensione dopo PCA: {df_cluster.shape}")
-
-        self.preprocessed_df = df_cluster
-        return df_cluster
-
-    def remove_outliers(self, df_cluster):
-        """
-        Rimuove gli outlier dal dataset utilizzando l'IQR (Interquartile Range).
-        """
-        Q1 = df_cluster.quantile(0.25)
-        Q3 = df_cluster.quantile(0.75)
-        IQR = Q3 - Q1
-        df_no_outliers = df_cluster[~((df_cluster < (Q1 - 1.5 * IQR)) | (df_cluster > (Q3 + 1.5 * IQR))).any(axis=1)]
-        logging.info(f"Dimensione del dataset dopo la rimozione degli outlier: {df_no_outliers.shape}")
-        return df_no_outliers
-
-    def perform_clustering(self):
-        """
-        Esegue il clustering utilizzando l'algoritmo specificato e salva il modello.
-        """
-        # Esegui il preprocessing dei dati se non è già stato fatto
-        if hasattr(self, 'preprocessed_df') and self.preprocessed_df is not None:
-            logging.info("Preprocessing già eseguito, salto il preprocessing.")
-            df_cluster = self.preprocessed_df
+        null_rows = dataset.isnull().sum(axis=1)
+        if null_rows.any():
+            logging.warning(f"Ci sono {null_rows[null_rows > 0].count()} righe con valori nulli nel dataset.")
         else:
-            logging.info("Preprocessing non ancora eseguito, avvio del preprocessing.")
-            # Salva il dataframe preprocessato
-            df_cluster = self.preprocess_data()
+            logging.info("Nessun valore nullo trovato nel dataset.")
 
-        if self.algorithm == 'kmeans':
-            logging.info(f"Esecuzione di KMeans con {self.n_clusters} cluster.")
-            model = KMeans(n_clusters=self.n_clusters, init='k-means++', n_init=10, max_iter=self.max_iter, random_state=42)
-            self.cluster_labels = model.fit_predict(df_cluster)
-
-            # Salvataggio del modello di KMeans
-            output_dir = 'saved_models'
-            if not os.path.exists(output_dir):
-                os.makedirs(output_dir)
-            model_filepath = os.path.join(output_dir, 'kmeans_model.pkl')
-            with open(model_filepath, 'wb') as file:
-                pickle.dump(model, file)
-            logging.info(f"Modello KMeans salvato con successo in {model_filepath}")
-
-        self.df['cluster'] = self.cluster_labels
-        logging.info(f"Clustering eseguito con successo. Cluster trovati: {np.unique(self.cluster_labels)}")
-
-        return self.df
-
-    def calculate_silhouette_per_cluster(self):
+    def preprocess_data(self, dataset):
         """
-        Calcola il Silhouette Score per ogni singolo cluster e il punteggio medio.
+        Trasforma le colonne categoriali in variabili numeriche usando Label Encoding.
+        :param dataset: Dataset da preprocessare.
+		:return: Dataset preprocessato (standardizzato) e i cluster.
         """
-        if self.cluster_labels is None:
-            logging.warning("Clustering non ancora eseguito. Eseguire 'perform_clustering()' prima della valutazione.")
-            return None
-
-        # Esegui il preprocessing dei dati se non è già stato fatto
-        if hasattr(self, 'preprocessed_df') and self.preprocessed_df is not None:
-            logging.info("Preprocessing già eseguito, salto il preprocessing.")
-            df_cluster = self.preprocessed_df
-        else:
-            logging.info("Preprocessing non ancora eseguito, avvio del preprocessing.")
-            # Salva il dataframe preprocessato
-            df_cluster = self.preprocess_data()
-
-        silhouette_vals = silhouette_samples(df_cluster, self.cluster_labels)
-        avg_silhouette = silhouette_vals.mean()
-
-        # Calcola il silhouette medio per ciascun cluster
-        silhouette_per_cluster = {}
-        for cluster in np.unique(self.cluster_labels):
-            cluster_silhouette_vals = silhouette_vals[self.cluster_labels == cluster]
-            silhouette_per_cluster[cluster] = cluster_silhouette_vals.mean()
-            logging.info(f"Silhouette Score per il cluster {cluster}: {silhouette_per_cluster[cluster]}")
+        logging.info("Inizio del preprocessamento delle colonne categoriali.")
         
-        logging.info(f"Silhouette Score medio: {avg_silhouette}")
-        return silhouette_per_cluster, avg_silhouette
-
-    def calculate_purity(self):
-        """
-        Calcola la purezza di ogni cluster e la purezza media rispetto alla colonna 'fascia_eta' originale.
-        """
-        if not hasattr(self, 'original_fascia_eta'):
-            logging.warning("La colonna 'fascia_eta' non è disponibile per calcolare la purezza.")
-            return None
-
-        # Crea un DataFrame temporaneo con cluster assegnati e la colonna target originale
-        df_temp = pd.DataFrame({
-            'cluster': self.cluster_labels,
-            'fascia_eta': self.original_fascia_eta
-        })
-
-        purity_per_cluster = []
-        total_correct = 0
-
-        # Calcola la purezza per ogni cluster
-        for cluster_id in np.unique(self.cluster_labels):
-            cluster_data = df_temp[df_temp['cluster'] == cluster_id]
-            most_common_class = cluster_data['fascia_eta'].mode()[0]
-            correct = len(cluster_data[cluster_data['fascia_eta'] == most_common_class])
-            total_correct += correct
-            cluster_purity = correct / len(cluster_data)
-            purity_per_cluster.append(cluster_purity)
-
-        # Calcola la purezza media
-        avg_purity = total_correct / len(df_temp)
-
-        logging.info(f"Purezza media: {avg_purity}")
-        return purity_per_cluster, avg_purity
-
-    def calculate_purity_OLD(self):
-        """
-        Calcola la purezza di ogni singolo cluster e la purezza media.
-        """
-        if self.target_column is None:
-            logging.warning("Colonna target non fornita, impossibile calcolare la purezza.")
-            return None
-
-        if self.cluster_labels is None:
-            logging.warning("Clustering non ancora eseguito. Eseguire 'perform_clustering()' prima della valutazione.")
-            return None
+        # Selezioniamo le colonne non numeriche
+        #non_numeric_columns = dataset.select_dtypes(exclude=[np.number]).columns.tolist()
+		# Rimuoviamo la colonna 'cluster' se presente
+        clusters = dataset['cluster'].to_numpy()
+        feature_columns = dataset.drop(columns=['cluster'])
         
-        # Verifica che la colonna target esista
-        if self.target_column not in self.df.columns:
-            logging.error(f"La colonna target '{self.target_column}' non esiste nel dataset.")
-            return None
+        # Applica Label Encoding per le variabili categoriali
+        for col in feature_columns.columns:
+            if feature_columns[col].dtype == 'object':
+                le = LabelEncoder()
+                feature_columns[col] = le.fit_transform(feature_columns[col])
+                self.transformed_columns.append((col, 'Label Encoding'))
 
-        purity_per_cluster = {}
-        for cluster in np.unique(self.cluster_labels):
-            cluster_points = self.df[self.cluster_labels == cluster]
-            target_counts = Counter(cluster_points[self.target_column])
-            max_class_count = max(target_counts.values())
-            purity = max_class_count / len(cluster_points)
-            purity_per_cluster[cluster] = purity
-            logging.info(f"Purezza per il cluster {cluster}: {purity:.4f}")
+		# Standardizzare solo le colonne numeriche (quelle già numeriche o codificate con Label Encoding)
+        scaler = StandardScaler()
+        X_standardized = scaler.fit_transform(feature_columns)
+        X_standardized_df = pd.DataFrame(X_standardized)
 
-        # Calcola la purezza media
-        avg_purity = np.mean(list(purity_per_cluster.values()))
-        logging.info(f"Purezza media: {avg_purity:.4f}")
-        return purity_per_cluster, avg_purity
+        logging.info("Preprocessamento e standardizzazione completati.")
+        return X_standardized_df, clusters
 
-    def optimize_k(self, min_k=2, max_k=10):
+    def fit(self, dataset):
         """
-        Ottimizza il numero di cluster basandosi sul Silhouette Score.
+        Esegue il clustering utilizzando KModes e calcola il silhouette score.
+        :param dataset: Dataset preprocessato.
+        :return: None
         """
-
-        # Esegui il preprocessing dei dati se non è già stato fatto
-        if hasattr(self, 'preprocessed_df') and self.preprocessed_df is not None:
-            logging.info("Preprocessing già eseguito, salto il preprocessing.")
-            df_cluster = self.preprocessed_df
-        else:
-            logging.info("Preprocessing non ancora eseguito, avvio del preprocessing.")
-            # Salva il dataframe preprocessato
-            df_cluster = self.preprocess_data()
-
-        best_k = min_k
-        best_score = -1
-        for k in range(min_k, max_k + 1):
-            model = KMeans(n_clusters=k, init='k-means++', n_init=10, max_iter=self.max_iter, random_state=42)
-            cluster_labels = model.fit_predict(df_cluster)
-            sil_score = silhouette_score(df_cluster, cluster_labels)
-            logging.info(f"Silhouette Score per k={k}: {sil_score}")
-            if sil_score > best_score:
-                best_k = k
-                best_score = sil_score
-
-        logging.info(f"Il miglior numero di cluster è {best_k} con un Silhouette Score di {best_score}")
-        self.n_clusters = best_k  # Aggiorna il numero di cluster ottimale
-        return best_k
-
-    def evaluate_clustering(self):
-        """
-        Valuta il clustering usando il Silhouette Score e Davies-Bouldin Index.
-        Calcola anche il Silhouette per ogni singolo cluster e la purezza.
-        """
-        if self.cluster_labels is None:
-            logging.warning("Clustering non ancora eseguito. Eseguire 'perform_clustering()' prima della valutazione.")
-            return None
-
-        # Esegui il preprocessing dei dati se non è già stato fatto
-        if hasattr(self, 'preprocessed_df') and self.preprocessed_df is not None:
-            logging.info("Preprocessing già eseguito, salto il preprocessing.")
-            df_cluster = self.preprocessed_df
-        else:
-            logging.info("Preprocessing non ancora eseguito, avvio del preprocessing.")
-            # Salva il dataframe preprocessato
-            df_cluster = self.preprocess_data()
-
-        # Calcolo del Silhouette Score complessivo e Davies-Bouldin Index
-        sil_score = silhouette_score(df_cluster, self.cluster_labels)
-        davies_bouldin = davies_bouldin_score(df_cluster, self.cluster_labels)
+        logging.info("Inizio del clustering KModes.")
         
-        # Calcola il Silhouette per ogni cluster
-        silhouette_per_cluster, avg_silhouette = self.calculate_silhouette_per_cluster()
+        # Check se ci sono valori nulli nel dataset
+        self.check_null_values(dataset)
 
-        # Calcola la purezza per ogni cluster
-        purity_per_cluster, avg_purity = self.calculate_purity()
+        # Seleziona tutte le colonne per il clustering
+        feature_columns = dataset.columns.tolist()
 
-        logging.info(f"Silhouette Score medio: {avg_silhouette}")
-        logging.info(f"Davies-Bouldin Index: {davies_bouldin}")
-        logging.info(f"Purezza media: {avg_purity}")
+        # Esegui il clustering KModes
+        self.kmodes = KModes(n_clusters=self.n_clusters, init='Huang', n_init=10, verbose=0)
+        self.labels = self.kmodes.fit_predict(dataset[feature_columns])
+        dataset['cluster'] = self.labels
+        
+        logging.info(f"Clustering labels: {self.labels}")
+        logging.info(f"Clustering KModes completato con {self.n_clusters} cluster.")
+        logging.info(f"Centroidi dei cluster: {self.kmodes.cluster_centroids_}")
 
-        return {
-            "Silhouette Score": sil_score,
-            "Davies-Bouldin Index": davies_bouldin,
-            "Silhouette per Cluster": silhouette_per_cluster,
-            "Purezza per Cluster": purity_per_cluster,
-            "Silhouette medio": avg_silhouette,
-            "Purezza media": avg_purity
-        }
+        # Preprocessa il dataset per trasformare tutte le colonne categoriali per il calcolo del Silhouette Score
+        X_standardized_df, clusters = self.preprocess_data(dataset)
 
-    def plot_clusters(self):
+        # Calcolo del Silhouette Score
+        logging.info("Inizio calcolo del Silhouette Score.")
+        #self.silhouette_avg = silhouette_score(dataset[feature_columns], self.labels)
+        #self.silhouette_values = silhouette_samples(dataset[feature_columns], self.labels)
+        self.silhouette_values = silhouette_samples(X_standardized_df, clusters)
+        normalized_silhouette_vals = (self.silhouette_values - self.silhouette_values.min()) / (self.silhouette_values.max() - self.silhouette_values.min())
+        self.silhouette_avg = np.mean(normalized_silhouette_vals)
+
+        logging.info(f"Clustering completato con silhouette score medio: {self.silhouette_avg}.")
+
+        X_standardized_df['cluster'] = self.labels
+        return X_standardized_df
+        
+    def calculate_purity(self, dataset, label_column='incremento_classificato'):
         """
-        Riduce dimensionalmente i dati con PCA a 2 dimensioni e genera un grafico dei cluster.
+        Calcola la purezza del clustering basata sulla colonna specificata.
+        Se la colonna è stata trasformata con One-Hot Encoding, aggrega i risultati.
+        :param dataset: Dataset elaborato in ingresso dalla classe FeatureExtractor.
+        :param label_column: Colonna di riferimento per calcolare la purezza. Default = 'incremento_classificato'.
+        :return: Purezza del clustering.
         """
-        if self.cluster_labels is None:
-            logging.warning("Clustering non ancora eseguito. Eseguire 'perform_clustering()' prima della visualizzazione.")
-            return
+        logging.info("Calcolo della purezza del clustering.")
 
-        # Esegui il preprocessing dei dati se non è già stato fatto
-        if hasattr(self, 'preprocessed_df') and self.preprocessed_df is not None:
-            logging.info("Preprocessing già eseguito, salto il preprocessing.")
-            df_cluster = self.preprocessed_df
-        else:
-            logging.info("Preprocessing non ancora eseguito, avvio del preprocessing.")
-            # Salva il dataframe preprocessato
-            df_cluster = self.preprocess_data()
+        # Verifica se la colonna originale esiste o è stata trasformata tramite One-Hot Encoding
+        if label_column not in dataset.columns:
+            logging.info(f"La colonna '{label_column}' non è presente direttamente. Verifico se è stata trasformata tramite One-Hot Encoding.")
+            
+            # Trova le colonne One-Hot Encoded corrispondenti a 'incremento_classificato'
+            encoded_columns = [col for col in dataset.columns if label_column in col]
+            
+            if not encoded_columns:
+                raise KeyError(f"La colonna '{label_column}' non è stata trovata né tra le colonne originali né tra quelle trasformate.")
 
-        # Applica PCA per ridurre a 2 dimensioni
-        pca = PCA(n_components=2)
-        pca_components = pca.fit_transform(df_cluster)
+            # Aggrega le colonne One-Hot Encoded: ciascuna riga prende l'etichetta della colonna con il valore massimo (1)
+            dataset[label_column] = dataset[encoded_columns].idxmax(axis=1)
 
-        # Crea un DataFrame con le componenti PCA
-        df_pca = pd.DataFrame(data=pca_components, columns=['PCA1', 'PCA2'])
-        df_pca['cluster'] = self.cluster_labels
+        # Trova il cluster con l'etichetta dominante
+        cluster_labels = np.unique(self.labels)
+        total_samples = dataset.shape[0]
+        correct_predictions = 0
 
-        # Visualizza i cluster
-        plt.figure(figsize=(10, 8))
-        sns.scatterplot(x='PCA1', y='PCA2', hue='cluster', data=df_pca, palette="viridis", s=100, alpha=0.7)
-        plt.title(f"Clustering usando PCA ({self.algorithm})")
-        plt.xlabel('PCA 1')
-        plt.ylabel('PCA 2')
-        plt.legend(loc='best')
-        plt.grid(True)
+        for cluster in cluster_labels:
+            cluster_indices = np.where(self.labels == cluster)[0]
+            true_labels_in_cluster = dataset[label_column].iloc[cluster_indices]
+            most_common_label = Counter(true_labels_in_cluster).most_common(1)[0][0]
+            correct_predictions += sum(true_labels_in_cluster == most_common_label)
 
-        # Salva il plot
+        purity = correct_predictions / total_samples
+        logging.info(f"Purezza del clustering calcolata: {purity}")
+        return purity
+
+    def plot_clusters(self, dataset, cluster_column='cluster'):
+        """
+        Esegue il plot dei cluster generati e salva i plot nella cartella 'graphs'.
+        Include il PCA plot e il Silhouette plot.
+        :param dataset: Dataset preprocessato contenente le etichette del cluster.
+        :param cluster_column: Nome della colonna per le etichette del cluster. Default = 'cluster'.
+        :return: None
+        """
+        logging.info("Inizio della creazione dei grafici dei cluster.")
+
+        # Creare la directory 'graphs' se non esiste
         output_dir = 'graphs'
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
-        filepath = os.path.join(output_dir, 'cluster_plot.png')
-        plt.savefig(filepath)
+            logging.info(f"Creata cartella '{output_dir}' per salvare i grafici.")
+
+        # PCA per ridurre le dimensioni e visualizzare i cluster in 2D
+        numeric_columns = dataset.drop(columns=[cluster_column]).select_dtypes(include=[np.number]).columns
+        pca = PCA(n_components=2)
+        pca_result = pca.fit_transform(dataset[numeric_columns])
+
+        # Creare il plot PCA
+        plt.figure(figsize=(8, 6))
+        scatter = plt.scatter(pca_result[:, 0], pca_result[:, 1], c=dataset[cluster_column], cmap='Set1', edgecolor='k')
+        
+        # Aggiungere le etichette degli assi
+        plt.xlabel('Principal Component 1')
+        plt.ylabel('Principal Component 2')
+        plt.title('PCA su Dataset')
+        
+        # Aggiungere la legenda
+        legend1 = plt.legend(*scatter.legend_elements(), title=cluster_column)
+        plt.gca().add_artist(legend1)
+        
+        # Salvare il PCA plot
+        pca_plot_path = os.path.join(output_dir, 'pca_clusters.png')
+        plt.savefig(pca_plot_path)
         plt.close()
-        logging.info(f"Plot dei cluster salvato con successo in {filepath}")
+        logging.info(f"PCA plot salvato con successo in '{pca_plot_path}'.")
 
-    def run_full_clustering_analysis(self):
+        # Plot del silhouette score
+        plt.figure(figsize=(10, 6))
+        y_lower = 10
+        for i in range(self.n_clusters):
+            ith_cluster_silhouette_values = self.silhouette_values[self.labels == i]
+            ith_cluster_silhouette_values.sort()
+
+            size_cluster_i = ith_cluster_silhouette_values.shape[0]
+            y_upper = y_lower + size_cluster_i
+
+            plt.fill_betweenx(np.arange(y_lower, y_upper),
+                            0, ith_cluster_silhouette_values)
+            plt.text(-0.05, y_lower + 0.5 * size_cluster_i, str(i))
+            y_lower = y_upper + 10  # Spazio tra i grafici
+
+        plt.title(f"Silhouette plot per i {self.n_clusters} cluster")
+        plt.xlabel("Valore del Silhouette coefficient")
+        plt.ylabel("Cluster")
+        plt.axvline(x=self.silhouette_avg, color="red", linestyle="--")
+        silhouette_plot_path = os.path.join(output_dir, 'silhouette_plot.png')
+        plt.savefig(silhouette_plot_path)
+        plt.close()
+        logging.info(f"Silhouette plot salvato con successo in '{silhouette_plot_path}'.")
+
+
+    def run_clustering(self, dataset, label_column='incremento_classificato', excluded_columns=None):
         """
-        Esegue l'intera pipeline di clustering, inclusi il preprocessing, il clustering,
-        la valutazione e la visualizzazione dei risultati.
+        Esegue l'intero processo di clustering: clustering, silhouette score, purity e plot.
+        :param dataset: Dataset elaborato in ingresso dalla classe FeatureExtractor.
+        :param label_column: Colonna di riferimento per la purezza del cluster.
+        :param excluded_columns: Lista di colonne da escludere dal clustering.
+        :return: None
         """
-        logging.info(f"Dimensione iniziale del dataset: {self.df.shape}")
-        logging.info("Inizio del processo di clustering completo.")
+        # Rimuovi le colonne specificate da `excluded_columns` se esistono
+        if excluded_columns:
+            dataset = dataset.drop(columns=excluded_columns, errors='ignore')
+            logging.info(f"Colonne escluse dal clustering: {excluded_columns}")
 
-        # Esegui il preprocessing dei dati
-        self.preprocess_data()
+        # Esegui clustering utilizzando tutte le colonne trasformate
+        dataset_clustered = self.fit(dataset)
+        print(dataset_clustered)
+        print(dataset_clustered.columns)
+        print(dataset_clustered.info())
 
-        # Ottimizza il numero di cluster se necessario
-        self.optimize_k(min_k=2, max_k=10)
+        # Calcola purezza
+        purity = self.calculate_purity(dataset, label_column)
 
-        # Esegue il clustering con il numero ottimale di cluster
-        self.perform_clustering()
+        # Plot dei cluster
+        self.plot_clusters(dataset_clustered)
 
-        # Valuta il clustering
-        self.evaluate_clustering()
-
-        # Visualizza i cluster con PCA
-        self.plot_clusters()
-
-        logging.info(f"Dimensione finale del dataset: {self.df.shape}")
-        logging.info("Processo di clustering completo.")
-
+        logging.info(f"Clustering KModes completato. Numero di Cluster: {self.n_clusters}, Silhouette Score Medio: {self.silhouette_avg}, Purezza: {purity}")

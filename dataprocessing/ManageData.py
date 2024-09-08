@@ -182,12 +182,12 @@ class ManageData:
         self.log_missing_values(df)
         self.save_dataset(df)
 
-        colonne_da_convertire = ['sesso', 'fascia_eta', 'trimestre', 'incremento_classificato']
-        df = DataFix.colonne_to_category(df, colonne_da_convertire)
+        #colonne_da_convertire = ['sesso', 'fascia_eta', 'trimestre', 'incremento_classificato']
+        #df = DataFix.colonne_to_category(df, colonne_da_convertire)
 
-        self.print_columns(df)
-        print(df.info())
-        print(df)
+        #self.print_columns(df)
+        #print(df.info())
+        #print(df)
 
         # Colonne presenti nel dataset
         # ['id_prenotazione', 'sesso', 'codice_regione_residenza',
@@ -197,8 +197,11 @@ class ManageData:
         #  'anno', 'incremento_classificato']        
 
         # features = ['asl_residenza', 'asl_erogazione', 'tipologia_professionista_sanitario'] 
-        clustering = Clustering(df)
+       # clustering = Clustering(df)
         # columns_to_remove = ['id_prenotazione', 'data_erogazione', 'trimestre', 'id_professionista_sanitario']
-        columns_to_remove = ['id_prenotazione', 'data_erogazione', 'trimestre', 'id_professionista_sanitario']
+        columns_to_remove = ['id_prenotazione', 'data_erogazione', 'id_professionista_sanitario']
         use_one_hot_encoding = False  # Se vuoi usare One-Hot Encoding
-        clustering.run_clustering(df, label_column='incremento_classificato', columns_to_remove=columns_to_remove, use_one_hot_encoding=use_one_hot_encoding)
+        # clustering.run_clustering(df, label_column='incremento_classificato', columns_to_remove=columns_to_remove, use_one_hot_encoding=use_one_hot_encoding)
+        # Creazione e esecuzione del clustering
+        clustering = Clustering(n_clusters=4)
+        clustering.run_clustering(df, label_column='incremento_classificato', excluded_columns=columns_to_remove)

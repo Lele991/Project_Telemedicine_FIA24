@@ -51,8 +51,8 @@ class ManageData:
             for col, missing_count in missing_by_column.items():
                 logging.info(f"La colonna '{col}' ha {missing_count} valori mancanti.")
 
-    def save_dataset(self, dataset):
-        file_path = 'data/extractor_dataset.parquet'
+    def save_dataset(self, dataset, name='extractor_dataset'):
+        file_path = 'data/' + name + '.parquet'
         """Salva il dataset in formato Parquet."""
         dataset.to_parquet(file_path, index=False)
         logging.info(f"Dataset salvato in formato Parquet: {file_path}")
@@ -192,10 +192,11 @@ class ManageData:
 
         # columns_to_remove = ['id_prenotazione', 'data_erogazione', 'trimestre', 'id_professionista_sanitario']
         columns_to_remove = ['id_prenotazione', 'data_erogazione', 'id_professionista_sanitario', 'durata_visita']
-        use_one_hot_encoding = True  # Se vuoi usare One-Hot Encoding
+        use_one_hot_encoding = False  # Se vuoi usare One-Hot Encoding
         # Creazione e esecuzione del clustering
         clustering = Clustering(n_clusters=4, use_one_hot=use_one_hot_encoding)
         clustering.run_clustering(df, label_column='incremento_classificato', excluded_columns=columns_to_remove)
+        self.save_dataset(clustering.get_dataset(), name='clustering_dataset')
 
 
 

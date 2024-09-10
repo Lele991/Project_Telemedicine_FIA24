@@ -192,6 +192,18 @@ def add_eta_paziente(dataset):
 
     return dataset
 
+def categorizza_durata_visita(durata):
+    if durata <= 15:
+        return 'breve'
+    elif 16 <= durata <= 30:
+        return 'media'
+    elif 31 <= durata <= 60:
+        return 'lunga'
+    elif 61 <= durata <= 87:
+        return 'molto lunga'
+    else:
+        return 'fuori range'  # Per gestire eventuali valori imprevisti
+
 def fill_durata_visita(dataset):
     """
     Calcola la durata della visita per le righe in cui 'durata_visita' è nulla.
@@ -221,6 +233,8 @@ def fill_durata_visita(dataset):
         logging.warning("Fill Durata Visita: Alcune durate della visita non sono state riempite. Controllare i dati.")
     else:
         dataset['durata_visita'] = dataset['durata_visita'].astype('int64')
+
+    # dataset['classificazione_durata_visita'] = dataset['durata_visita'].apply(categorizza_durata_visita)
 
     return dataset
 

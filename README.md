@@ -1,56 +1,108 @@
 
 # Progetto: Clustering Supervisionato per la Teleassistenza
 
-Questo progetto mira a profilare i pazienti in base al loro utilizzo del servizio di Teleassistenza, utilizzando tecniche di clustering supervisionato. L'obiettivo principale è identificare gruppi di pazienti con comportamenti simili, in funzione dell'incremento delle teleassistenze fornite. Attraverso l'analisi dei cluster, si possono comprendere i fattori che influenzano l'aumento dell'uso del servizio, migliorando così la gestione e l'erogazione delle cure a distanza.
+Questo progetto mira a profilare i pazienti in base al loro utilizzo del servizio di Teleassistenza, utilizzando tecniche di clustering supervisionato. L'obiettivo principale è identificare gruppi di pazienti con comportamenti simili, migliorando così la gestione e l'erogazione delle cure a distanza.
 
+## Obiettivi
 
-##Obiettivi
-L'obiettivo principale del progetto è migliorare la comprensione dei fattori che determinano l'aumento dell'uso del servizio di Teleassistenza, specialmente tra i pazienti con malattie croniche. Questo verrà realizzato creando modelli di clustering supervisionato per identificare gruppi di pazienti con comportamenti simili. 
-Gli obiettivi specifici includono: 
-1) individuare i pattern ricorrenti che portano a un maggiore ricorso alla Teleassistenza.
-2) fornire insight per migliorare la qualità e l'efficienza del servizio.
-3) aiutare a personalizzare le cure e a ridurre il carico sugli ospedali, favorendo così la deospedalizzazione.
+- Comprendere i fattori che determinano l'aumento dell'uso del servizio di Teleassistenza.
+- Identificare pattern ricorrenti tra pazienti con malattie croniche.
+- Fornire insight per migliorare la qualità del servizio e personalizzare le cure.
+- Ridurre il carico sugli ospedali favorendo la deospedalizzazione.
 
+## Struttura del Progetto
 
-##Suddivisione
-Nella repository *https://github.com/Lele991/Project_Telemedicine_FIA24.git* sono presenti delle cartelle che contengono i codici e le logiche attraverso le quali si è gestito il problema.
-Vi è:
+### Data
+- **Sottocartella Italia**: Contiene file JSON con dati sui comuni, regioni e province italiane. Questi dati vengono utilizzati per creare le logiche di processamento.
 
-# Data
-La cartella **data** contiene una sottocartella **Italia**.
+### Data Preprocessing
+La cartella **datapreprocessing** contiene file e sotto-cartelle per la preparazione dei dati utilizzati per l'analisi AI.
 
-## Sottocartella
-Contiene JSON con le informazioni di tutti i comuni,regioni e province italiane, dati mediate i quali vengono successivamente implementate delle logiche.
+#### Sottocartelle
+- **datafix**: Corregge errori o incongruenze nei dati.
+- **datacleaner**: Pulisce i dati, eliminando duplicati e valori mancanti.
 
-## File Principali
-Traccia del progetto.
-
-
-# Data Preprocessing
-
-La cartella **datapreprocessing** contiene vari file e una sottocartella per la preparazione dei dati, necessari per l'analisi AI.
-
-## Sottocartella
-- **datafix**: Corregge eventuali errori o incongruenze nei dati.
-- **datacleaner**: Si occupa della pulizia dei dati, rimuovendo valori mancanti, duplicati o non rilevanti.
-
-## File Principali
-- **clustering**: Organizza i dati in gruppi simili (cluster).
+#### File Principali
+- **clustering**: Organizza i dati in gruppi simili.
 - **featureselection**: Seleziona le feature più rilevanti per il modello.
 - **featureextractor**: Estrae nuove feature dai dati grezzi.
-- **managedata**: Gestisce i dati complessivi, integrando varie fasi di preprocessamento.
+- **managedata**: Gestisce il dataset, integrando diverse fasi di preprocessamento.
 
 
-# Graph
 
-La cartella **graph** contiene i risultati dei test effettuati sotto forma di grafici, che visualizzano l'andamento e le performance dei vari modelli di clustering e feature selection.
+### Graph
+La cartella **graph** contiene grafici che visualizzano i risultati dei test effettuati, mostrando le performance dei modelli di clustering e selezione delle feature.
 
-# Altri File
+### Altri File
+- **.gitignore**: Definisce i file e le cartelle da ignorare nel repository Git.
+- **main**: Coordina tutte le operazioni, dal preprocessamento all'analisi dei dati.
 
-- **.gitignore**: Definisce i file e le cartelle da ignorare nel repository Git, per evitare di caricare file temporanei o di sistema.
-- **main**: È il file principale che esegue il workflow completo, orchestrando le operazioni di preprocessamento e analisi dei dati.
+### Gestione dei log del programma
+**Logging**:
+   - Lo script utilizza il logging per segnalare eventuali errori, come file non trovati o problemi nella formattazione dei dati, e per indicare il completamento del processo.
 
-Questi componenti lavorano insieme per ottimizzare i dati, analizzarli e visualizzare i risultati ottenuti dai vari modelli AI.
+
+### Datacleaner.py
+
+1. **remove_duplicates(dataset)**
+   - Rimuove righe duplicate dal dataset.
+   - Registra nel log quante righe duplicate sono state rimosse.
+
+2. **remove_missing_values_rows(dataset, null_threshold=0.6)**
+   - Rimuove le colonne che hanno una percentuale di valori nulli superiore a una soglia (default: 60%).
+   - Registra nel log quali colonne sono state eliminate.
+
+3. **remove_disdette(dataset)**
+   - Rimuove le righe in cui `data_disdetta` non è nullo, ossia le cancellazioni.
+   - Registra nel log quante righe sono state rimosse.
+
+4. **remove_columns(dataset, columns)**
+   - Elimina dal dataset le colonne specificate.
+
+5. **handle_missing_values(dataset, strategy='mean')**
+   - Riempie i valori mancanti in base alla strategia scelta (default: media).
+   - Registra nel log il numero di valori mancanti trovati e gestiti.
+
+6. **update_dataset_with_outliers(dataset, contamination=0.05, action='remove')**
+   - Identifica e gestisce gli outlier con un approccio combinato tra **Isolation Forest** e **Local Outlier Factor**.
+   - Gli outlier possono essere rimossi o marcati, a seconda dell'azione scelta.
+
+
+### Datafix.py
+
+1. **fetch_province_code_data(file_path)**:
+   - Carica i dati delle province da un file JSON e restituisce dizionari che mappano i codici delle province ai nomi e viceversa.
+
+2. **fetch_comuni_code_data(file_path)**:
+   - Carica i dati dei comuni da un file JSON e restituisce dizionari che mappano i codici dei comuni ai nomi e viceversa.
+
+3. **process_province_comuni(dataset, codice_to_provincia, provincia_to_codice, codice_to_comune, comune_to_codice)**:
+   - Riempie i campi relativi a comuni e province nel dataset utilizzando i dizionari di mappatura caricati dai file JSON.
+
+4. **add_durata_visita(dataset)**:
+   - Calcola la durata della visita basandosi sull'ora di inizio e fine, aggiungendo una colonna 'durata_visita' in minuti.
+
+5. **add_eta_paziente(dataset)**:
+   - Calcola l'età del paziente in base alla data di nascita e aggiunge una colonna 'eta_paziente'. Le età non plausibili sono gestite come valori mancanti (NaN).
+
+6. **fill_durata_visita(dataset)**:
+   - Riempie i valori mancanti nella colonna 'durata_visita' utilizzando la durata media per tipo di servizio, o calcola la durata se disponibili ora di inizio e fine.
+
+7. **add_fascia_eta_column(dataset)**:
+   - Aggiunge una colonna 'fascia_eta' per categorizzare i pazienti in diverse fasce d'età e normalizza i valori di età.
+
+8. **colonne_to_category(df, colonne)**:
+   - Converte le colonne specificate in 'category' per ottimizzare la memoria.
+
+## Come Utilizzare:
+
+1. **Dati di Input**:
+   - Fornire i file JSON contenenti le informazioni su province e comuni, in modo che possano essere utilizzati per riempire i campi mancanti nel dataset.
+   - Assicurarsi che il dataset contenga le colonne necessarie come `comune_residenza`, `provincia_residenza`, `ora_inizio_erogazione`, `data_nascita`, ecc.
+
+2. **Processo**:
+   - Utilizzare le funzioni descritte per caricare i dati dai file JSON e processare il dataset, riempiendo i valori mancanti e aggiungendo nuove colonne come 'durata_visita' ed 'eta_paziente'.
+
 
 # Feature Selection
 
@@ -77,9 +129,6 @@ Crea una matrice di correlazione utilizzando Cramér's V per tutte le colonne ca
 - **display_heatmap(corr_matrix, title, filename)**: Genera e salva una heatmap della matrice di correlazione.
 - **execute_feature_selection(threshold=0.8,remove_others_colum_by_threshold=False)**: Esegue l'intera pipeline di selezione delle caratteristiche.
 
-## Log delle Operazioni
-
-Il modulo utilizza il logging per tracciare ogni fase del processo di selezione delle caratteristiche, registrando messaggi informativi, avvisi e risultati delle operazioni.
 
 ## Output
 

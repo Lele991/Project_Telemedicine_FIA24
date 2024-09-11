@@ -94,7 +94,7 @@ La cartella **graph** contiene grafici che visualizzano i risultati dei test eff
 8. **colonne_to_category(df, colonne)**:
    - Converte le colonne specificate in 'category' per ottimizzare la memoria.
 
-## Come Utilizzare:
+#### Come Utilizzare:
 
 1. **Dati di Input**:
    - Fornire i file JSON contenenti le informazioni su province e comuni, in modo che possano essere utilizzati per riempire i campi mancanti nel dataset.

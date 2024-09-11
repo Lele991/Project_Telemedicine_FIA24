@@ -25,12 +25,13 @@ class Clustering:
         self.silhouette_values = None
         self.transformed_columns = []  # Tiene traccia delle colonne trasformate
         self.use_one_hot = use_one_hot  # Controlla se usare One-Hot o Label Encoding
-    def get_dataset(self):
+        self.dataset_clustered = None
+    def get_dataset_clustered(self):
         """
         Restituisce il dataset con le etichette del cluster.
         :return: Dataset con le etichette del cluster.
         """
-        return self.dataset
+        return self.dataset_clustered
 
     def check_null_values(self, dataset):
         """
@@ -355,6 +356,7 @@ class Clustering:
 
         # Esegui clustering utilizzando tutte le colonne trasformate
         dataset_clustered = self.fit(dataset)
+        self.dataset_clustered = dataset_clustered
         print(dataset_clustered)
         print(dataset_clustered.columns)
         print(dataset_clustered.info())

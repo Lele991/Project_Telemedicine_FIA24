@@ -52,7 +52,40 @@ La cartella **graph** contiene i risultati dei test effettuati sotto forma di gr
 
 Questi componenti lavorano insieme per ottimizzare i dati, analizzarli e visualizzare i risultati ottenuti dai vari modelli AI.
 
-# Feature Extractor
+# Feature Selection
+
+## Descrizione
+
+La classe FeatureSelection è progettata per eseguire la selezione delle caratteristiche su un dataset, concentrandosi in particolare su colonne categoriali. L'algoritmo utilizza la V di Cramér per calcolare la correlazione tra le colonne e rimuove le caratteristiche che sono perfettamente o altamente correlate, in base a una soglia definita. Inoltre, genera heatmap per visualizzare la correlazione tra le variabili.
+
+## Funzionalità Principali
+
+- *Calcolo della correlazione tra variabili categoriali*: Utilizza la V di Cramér per determinare la correlazione tra le variabili categoriali.
+- *Rimozione delle caratteristiche perfettamente correlate*: Rimuove le colonne con correlazione perfetta (V di Cramér pari a 1.0).
+- *Rimozione delle caratteristiche altamente correlate*: Opzionalmente, rimuove le colonne con correlazione superiore a una soglia definita dall'utente.
+- *Visualizzazione delle correlazioni*: Genera heatmap delle correlazioni prima e dopo il processo di selezione delle caratteristiche.
+- *Pipeline completa*: Esegue l'intero processo di selezione delle caratteristiche in una singola chiamata.
+
+## Comandi Principali
+
+- **calculate_cramers_v(column1, column2)** :
+Calcola il V di Cramér tra due variabili categoriali.
+- **create_correlation_matrix()** :
+Crea una matrice di correlazione utilizzando Cramér's V per tutte le colonne categoriali del dataset.
+- **remove_perfectly_correlated_features(corr_matrix, threshold=1.0)**: Rimuove le colonne con correlazione perfetta.
+- **remove_highly_correlated_features(corr_matrix, threshold=0.8)**:Rimuove le colonne con correlazione superiore alla soglia specificata.
+- **display_heatmap(corr_matrix, title, filename)**: Genera e salva una heatmap della matrice di correlazione.
+- **execute_feature_selection(threshold=0.8,remove_others_colum_by_threshold=False)**: Esegue l'intera pipeline di selezione delle caratteristiche.
+
+## Log delle Operazioni
+
+Il modulo utilizza il logging per tracciare ogni fase del processo di selezione delle caratteristiche, registrando messaggi informativi, avvisi e risultati delle operazioni.
+
+## Output
+
+•	I grafici saranno salvati nella directory ‘ graphs ‘ con il nome ‘ combined_plot.png ‘.
+
+# Feature Extraction
 
 ## Descrizione
 

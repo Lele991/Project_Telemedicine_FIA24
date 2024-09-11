@@ -157,9 +157,7 @@ Questa classe **FeatureExtractor** è progettata per analizzare un dataset, iden
 -	**plot_graph()**:  Genera e salva grafici per visualizzare la distribuzione degli incrementi percentuali e l'andamento trimestrale delle teleassistenze.
 -	**run_analysis()**:  Esegue l'intera pipeline di analisi dei dati, dal preprocessamento alla generazione dei grafici.
 
-  ## Log delle Operazioni
 
-  Il modulo utilizza il logging per tenere traccia di ogni fase dell'analisi. Viene creato un log dettagliato di ogni fase, che include informazioni sull'inizio e il completamento dei diversi passaggi, oltre a eventuali warning per dati mancanti o non validi.
 
   ## Output
 

@@ -52,5 +52,41 @@ La cartella **graph** contiene i risultati dei test effettuati sotto forma di gr
 
 Questi componenti lavorano insieme per ottimizzare i dati, analizzarli e visualizzare i risultati ottenuti dai vari modelli AI.
 
+# Feature Extractor
+
+## Descrizione
+
+Questa classe **FeatureExtractor** è progettata per analizzare un dataset, identificare e categorizzare gli incrementi percentuali di servizi erogati in base al tempo (per trimestre e anno) e fornire una visualizzazione dei dati. La pipeline di analisi include il preprocessamento dei dati, il calcolo degli incrementi, la categorizzazione della crescita e la creazione di grafici per comprendere le tendenze del dataset.
+
+## Funzionalità Principali
+
+-	*Preprocessamento dei Dati*: Conversione delle date in formati utilizzabili per l'analisi e creazione di nuove colonne per anno e trimestre.
+-	*Calcolo degli Incrementi Percentuali*: Raggruppamento dei dati per anno, trimestre e attività, calcolo della variazione percentuale del numero di servizi rispetto ai trimestri precedenti.
+-	*Categorizzazione della Crescita*: Classificazione degli incrementi percentuali in categorie come 'crescita costante', 'crescita bassa', 'decrescita', ecc.
+-	*Creazione di Grafici*: Generazione di istogrammi e boxplot per visualizzare la distribuzione degli incrementi percentuali, creazione di un grafico per analizzare l’andamento trimestrale delle teleassistenze.
+-	*Pipeline Completa*: Esecuzione  dell'intera pipeline di analisi in sequenza.
+
+## Comandi Principali
+
+-	**preprocess_data()**:  Prepara i dati convertendo le date in formato datetime e creando le colonne "anno" e "trimestre".
+-	**calculate_percentage_increments()**:  Calcola gli incrementi percentuali del numero di servizi per ogni attività, raggruppando per anno e trimestre.
+-	**determine_growth_category(variazione_percentuale)**: Determina la categoria di crescita in base agli incrementi percentuali.
+-	**apply_growth_categorization(grouped ’)**: Applica la categorizzazione della crescita al dataset originale.
+-	**plot_graph()**:  Genera e salva grafici per visualizzare la distribuzione degli incrementi percentuali e l'andamento trimestrale delle teleassistenze.
+-	**run_analysis()**:  Esegue l'intera pipeline di analisi dei dati, dal preprocessamento alla generazione dei grafici.
+
+  ## Log delle Operazioni
+
+  Il modulo utilizza il logging per tenere traccia di ogni fase dell'analisi. Viene creato un log dettagliato di ogni fase, che include informazioni sull'inizio e il completamento dei diversi passaggi, oltre a eventuali warning per dati mancanti o non validi.
+
+  ## Output
+
+   - Heatmap delle correlazioni (iniziale e finale) salvate in graphs.
+   -  Dataset ottimizzato senza variabili altamente correlate.
+     
+	 
+
+
+
 
 

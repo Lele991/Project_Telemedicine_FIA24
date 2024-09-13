@@ -1,0 +1,25 @@
+{
+    "data_elaborazione": "2024-09-13 14:38:33",
+    "colonne_escluse": [
+        "id_prenotazione",
+        "data_erogazione",
+        "id_professionista_sanitario",
+        "durata_visita"
+    ],
+    "colonne_utilizzate": [
+        "sesso",
+        "codice_regione_residenza",
+        "codice_descrizione_attivita",
+        "codice_tipologia_struttura_erogazione",
+        "codice_tipologia_professionista_sanitario",
+        "fascia_eta",
+        "trimestre",
+        "anno",
+        "incremento_classificato",
+        "cluster"
+    ],
+    "numero_di_cluster": 4,
+    "silhouette_score_medio": 0.6859149804527185,
+    "purezza": 0.5910260857269737,
+    "metrica_finale": 0.4384705330898461
+}

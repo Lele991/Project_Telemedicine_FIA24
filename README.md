@@ -130,16 +130,6 @@ La classe `ManageData` gestisce l'intero processo di preprocessing, analisi e cl
 
 ### Classe `DataPlot`
 
-#### Inizializzazione
-
-```python
-def __init__(self, df):
-    # Inizializza la classe con il dataset.
-    self.df = df
-    # Crea la directory 'graphs' se non esiste
-```
-
-- Inizializza la classe e crea la directory `graphs` se non esiste.
 
 #### Metodi Principali
 
@@ -184,6 +174,39 @@ Tutti i grafici sono salvati nella directory 'graphs'. I principali grafici incl
 - **Incremento Classificato per Cluster** (`increment_by_cluster.png`)
 - **Distribuzione dei Cluster per Trimestre** (`cluster_by_quarter.png`)
 
+### `Clustering.py`
+
+- **n_clusters**: Numero di cluster per KModes.
+- **use_one_hot**: Se impostato su True, utilizza One-Hot Encoding per le variabili categoriali, altrimenti utilizza Label Encoding.
+
+#### Metodi Principali
+
+1. **get_dataset_clustered()**: Restituisce il dataset con le etichette dei cluster.
+   
+2. **elbow_method(self, dataset, min_clusters=4, max_clusters=10)**: Esegue l'Elbow Method per determinare il numero ottimale di cluster e salva il grafico.
+
+3. **preprocess_data(self, dataset)**: Trasforma le variabili categoriali usando One-Hot o Label Encoding, e standardizza i dati per il clustering.
+
+4. **fit(self, dataset)**: Esegue il clustering con KModes, calcola il silhouette score, e restituisce il dataset con le etichette dei cluster.
+
+5. **calculate_purity(self, dataset, label_column='incremento_classificato')**: Calcola la purezza del clustering basata su una colonna di riferimento.
+
+6. **plot_clusters(self, dataset)**: Crea e salva un grafico 2D e un silhouette plot dei cluster.
+
+7. **plot_clusters_3d(self, dataset)**: Crea e salva un grafico 3D dei cluster utilizzando PCA.
+
+8. **run_clustering(self, dataset, label_column='incremento_classificato', excluded_columns=None)**: Esegue l'intero processo di clustering, inclusi clustering, calcolo della purezza, plotting e salvataggio dei risultati.
+
+## Output
+
+- **Grafici Salvati**: Tutti i grafici sono salvati nella directory `graphs`:
+  - **Elbow Method** (`elbow_method.png`)
+  - **PCA Plot 2D** (`pca_clusters.png`)
+  - **PCA Plot 3D** (`pca_clusters_3d.png`)
+  - **Silhouette Plot** (`silhouette_plot.png`)
+
+- **Risultati Clustering**: I risultati del clustering vengono salvati nella directory `results` in formato JSON:
+  - **clustering_results.json**: Contiene le informazioni su colonne escluse/utilizzate, numero di cluster, silhouette score medio, purezza e metrica finale.
 
 
 # Feature Selection

@@ -186,7 +186,7 @@ Tutti i grafici sono salvati nella directory 'graphs'. I principali grafici incl
   
 - **Distribuzione dei Cluster per Trimestre** (`cluster_by_quarter.png`)
 
-### `Clustering.py`
+### Clustering.py
 
 - **n_clusters**: Numero di cluster per KModes.
 - **use_one_hot**: Se impostato su True, utilizza One-Hot Encoding per le variabili categoriali, altrimenti utilizza Label Encoding.
@@ -221,7 +221,7 @@ Tutti i grafici sono salvati nella directory 'graphs'. I principali grafici incl
   - **clustering_results.json**: Contiene le informazioni su colonne escluse/utilizzate, numero di cluster, silhouette score medio, purezza e metrica finale.
 
 
-# Feature Selection
+### FeatureSelection.py
 
 ## Descrizione
 
@@ -251,7 +251,7 @@ Crea una matrice di correlazione utilizzando Cramér's V per tutte le colonne ca
 
 •	I grafici saranno salvati nella directory ‘ graphs ‘ con il nome ‘ combined_plot.png ‘.
 
-# Feature Extraction
+### FeatureExtraction.py
 
 ## Descrizione
 

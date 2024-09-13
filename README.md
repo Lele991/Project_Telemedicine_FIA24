@@ -49,14 +49,19 @@ La classe `ManageData` gestisce l'intero processo di preprocessing, analisi e cl
 #### Funzionalità Principali:
 
 1. **replace_none_with_nan**: Sostituisce i valori 'None' e `None` con `NaN` all'interno del dataset per standardizzare i valori mancanti.
+
 2. **log_missing_values**: Logga le colonne del dataset che contengono valori mancanti, fornendo un conteggio dettagliato per ogni colonna.
+
 3. **save_dataset**: Salva il dataset processato in formato Parquet.
+
 4. **print_columns**: Logga e stampa l'elenco delle colonne presenti nel dataset.
+
 5. **clean_data**: Esegue un ciclo completo di pulizia del dataset:
     - Rimuove cancellazioni (`data_disdetta` non nullo).
     - Riempie i campi comuni e province utilizzando dati esterni.
     - Rimuove duplicati e colonne non necessarie.
     - Gestisce i valori mancanti in base a una soglia di tolleranza configurabile.
+      
 6. **run_analysis**: Esegue il ciclo completo di analisi, che include:
     - Pulizia del dataset.
     - Aggiunta della durata della visita e calcolo dell'età del paziente.
@@ -128,7 +133,7 @@ La classe `ManageData` gestisce l'intero processo di preprocessing, analisi e cl
    - Utilizzare le funzioni descritte per caricare i dati dai file JSON e processare il dataset, riempiendo i valori mancanti e aggiungendo nuove colonne come 'durata_visita' ed 'eta_paziente'.
 
 
-### Classe `DataPlot`
+### DataPlot,py
 
 
 #### Metodi Principali
@@ -166,12 +171,19 @@ La classe `ManageData` gestisce l'intero processo di preprocessing, analisi e cl
 
 Tutti i grafici sono salvati nella directory 'graphs'. I principali grafici includono:
 - **Distribuzione dei Cluster** (`cluster_distribution.png`)
+  
 - **Distribuzione del Sesso nei Cluster** (`sex_distribution_by_cluster.png`)
+  
 - **Distribuzione delle Fasce d'Età nei Cluster** (`age_distribution_by_cluster.png`)
+  
 - **Durata delle Visite per Cluster** (`visit_duration_by_cluster.png`)
+  
 - **Distribuzione dei Cluster per Regione** (`cluster_by_region.png`)
+  
 - **Distribuzione dei Cluster per Tipologia di Struttura** (`cluster_by_structure_type.png`)
+  
 - **Incremento Classificato per Cluster** (`increment_by_cluster.png`)
+  
 - **Distribuzione dei Cluster per Trimestre** (`cluster_by_quarter.png`)
 
 ### `Clustering.py`

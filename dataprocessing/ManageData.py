@@ -6,6 +6,7 @@ from dataprocessing.Clustering import Clustering
 from dataprocessing.FeatureSelection import FeatureSelection
 from dataprocessing.FeatureExtractor import FeatureExtractor
 from dataprocessing.manage import DataCleaner, DataFix
+from dataprocessing.manage.DataPlot import DataPlot
 
 # Configurazione del logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -196,8 +197,15 @@ class ManageData:
         # Creazione e esecuzione del clustering
         clustering = Clustering(n_clusters=4, use_one_hot=use_one_hot_encoding)
         clustering.run_clustering(df, label_column='incremento_classificato', excluded_columns=columns_to_remove)
-        self.save_dataset(clustering.get_dataset(), name='clustering_dataset')
+        dataset_clustered = clustering.get_dataset_with_cluster()
 
+        # Aggiungi la colonna 'cluster' dal dataset_clustered al dataset df
+        df['cluster'] = dataset_clustered['cluster']
+        self.save_dataset(df, name='dataset_clustered')
+        
+        # Inizializza il costruttore DataPlot
+        data_plot = DataPlot(df)
+        data_plot.generate_plots()
 
 
 '''

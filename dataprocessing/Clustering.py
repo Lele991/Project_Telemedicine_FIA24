@@ -1,4 +1,6 @@
+from datetime import datetime
 import os
+from flask import json
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -23,15 +25,22 @@ class Clustering:
         self.labels = None
         self.silhouette_avg = None
         self.silhouette_values = None
+        self.purity = None
+        self.final_metric = None
         self.transformed_columns = []  # Tiene traccia delle colonne trasformate
         self.use_one_hot = use_one_hot  # Controlla se usare One-Hot o Label Encoding
         self.dataset_clustered = None
+        self.dataset_with_cluster = None
+
     def get_dataset_clustered(self):
         """
         Restituisce il dataset con le etichette del cluster.
         :return: Dataset con le etichette del cluster.
         """
         return self.dataset_clustered
+    
+    def get_dataset_with_cluster(self):
+        return self.dataset_with_cluster
 
     def check_null_values(self, dataset):
         """
@@ -138,7 +147,6 @@ class Clustering:
         
         return df_standardized, clusters
 
-
     def fit(self, dataset):
         """
         Esegue il clustering utilizzando KModes e calcola il silhouette score.
@@ -157,6 +165,7 @@ class Clustering:
         self.kmodes = KModes(n_clusters=self.n_clusters, init='Huang', n_init=10, verbose=0)
         self.labels = self.kmodes.fit_predict(dataset[new_columns])
         dataset['cluster'] = self.labels
+        self.dataset_with_cluster = dataset
         
         logging.info(f"Clustering completato con {self.n_clusters} cluster.")
 
@@ -173,6 +182,21 @@ class Clustering:
         
         df_standardized['cluster'] = self.labels
         return df_standardized
+    
+    def calculate_final_metric(self):
+        """
+        Calcola la metrica finale come la media tra purezza e silhouette_mean meno 0.05 volte il numero di cluster.
+        Utilizza np.mean per calcolare la media.
+        :return: La metrica finale.
+        """
+        # Calcola la media di purezza e silhouette_avg
+        average_score = np.mean([self.purity, self.silhouette_avg])
+        
+        # Applica la penalizzazione basata sul numero di cluster
+        penalty = 0.05 * self.n_clusters
+        
+        # Calcola la metrica finale
+        self.final_metric = average_score - penalty
         
     def calculate_purity(self, dataset, label_column='incremento_classificato'):
         """
@@ -210,7 +234,7 @@ class Clustering:
 
         purity = correct_predictions / total_samples
         logging.info(f"Purezza del clustering calcolata: {purity}")
-        return purity
+        self.purity = purity
 
     def plot_clusters_3d(self, dataset, cluster_column='cluster'):
         """
@@ -335,7 +359,29 @@ class Clustering:
         plt.savefig(silhouette_plot_path)
         plt.close()
         logging.info(f"Silhouette plot salvato con successo in '{silhouette_plot_path}'.")
+    
+    def save_results(self, excluded_columns, used_columns):
+        # Save the results to a JSON file
+        results = {
+            "data_elaborazione": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "colonne_escluse" : excluded_columns,
+            "colonne_utilizzate": used_columns,
+            "numero_di_cluster": self.n_clusters,
+            "silhouette_score_medio": self.silhouette_avg,
+            "purezza": self.purity,
+            "metrica_finale": self.final_metric
+        }
 
+        output_dir = 'results'
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+            logging.info(f"Creata cartella '{output_dir}' per salvare i risultati.")
+
+        results_path = os.path.join(output_dir, 'clustering_results.json')
+        with open(results_path, 'w') as json_file:
+            json.dump(results, json_file, indent=4)
+
+        logging.info(f"Risultati del clustering salvati con successo in '{results_path}'.")
 
     def run_clustering(self, dataset, label_column='incremento_classificato', excluded_columns=None):
         """
@@ -362,10 +408,17 @@ class Clustering:
         print(dataset_clustered.info())
 
         # Calcola purezza
-        purity = self.calculate_purity(dataset, label_column)
+        self.calculate_purity(dataset, label_column)
+
+        # Calcolo metrica finale con penalty di 0.5
+        self.calculate_final_metric()
 
         # Plot dei cluster
         self.plot_clusters(dataset_clustered)
         self.plot_clusters_3d(dataset_clustered)
 
-        logging.info(f"Clustering KModes completato. Numero di Cluster: {self.n_clusters}, Silhouette Score Medio: {self.silhouette_avg}, Purezza: {purity}")
+        # Salva
+        self.save_results(excluded_columns, dataset.columns.tolist())
+
+        # Log the clustering results
+        logging.info(f"Clustering KModes completato. Numero di Cluster: {self.n_clusters}, Silhouette Score Medio: {self.silhouette_avg}, Purezza: {self.purity}")

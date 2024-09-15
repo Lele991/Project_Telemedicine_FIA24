@@ -1,5 +1,5 @@
 {
-    "data_elaborazione": "2024-09-15 13:50:16",
+    "data_elaborazione": "2024-09-15 23:46:09",
     "colonne_escluse": [
         "id_prenotazione",
         "data_erogazione",
@@ -19,7 +19,7 @@
         "cluster"
     ],
     "numero_di_cluster": 4,
-    "silhouette_score_medio": 0.6290964368447605,
-    "purezza": 0.5996042551405977,
-    "metrica_finale": 0.4143503459926791
+    "silhouette_score_medio": 0.6725252270976444,
+    "purezza": 0.6279976237641255,
+    "metrica_finale": 0.45026142543088493
 }

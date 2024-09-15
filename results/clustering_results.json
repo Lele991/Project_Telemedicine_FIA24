@@ -1,5 +1,5 @@
 {
-    "data_elaborazione": "2024-09-13 14:38:33",
+    "data_elaborazione": "2024-09-15 13:50:16",
     "colonne_escluse": [
         "id_prenotazione",
         "data_erogazione",
@@ -8,10 +8,10 @@
     ],
     "colonne_utilizzate": [
         "sesso",
-        "codice_regione_residenza",
-        "codice_descrizione_attivita",
-        "codice_tipologia_struttura_erogazione",
-        "codice_tipologia_professionista_sanitario",
+        "regione_residenza",
+        "descrizione_attivita",
+        "tipologia_struttura_erogazione",
+        "tipologia_professionista_sanitario",
         "fascia_eta",
         "trimestre",
         "anno",
@@ -19,7 +19,7 @@
         "cluster"
     ],
     "numero_di_cluster": 4,
-    "silhouette_score_medio": 0.6859149804527185,
-    "purezza": 0.5910260857269737,
-    "metrica_finale": 0.4384705330898461
+    "silhouette_score_medio": 0.6290964368447605,
+    "purezza": 0.5996042551405977,
+    "metrica_finale": 0.4143503459926791
 }

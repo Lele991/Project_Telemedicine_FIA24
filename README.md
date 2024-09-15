@@ -18,9 +18,10 @@ Questo progetto mira a profilare i pazienti in base al loro utilizzo del servizi
 ### Data Preprocessing
 La cartella **datapreprocessing** contiene file e sotto-cartelle per la preparazione dei dati utilizzati per l'analisi AI.
 
-#### Sottocartelle
+#### Sottocartella manage
 - **datafix**: Corregge errori o incongruenze nei dati.
 - **datacleaner**: Pulisce i dati, eliminando duplicati e valori mancanti.
+- **dataplot** : Si occupa di generare e salvare grafici che visualizzano la distribuzione dei cluster.
 
 #### File Principali
 - **clustering**: Organizza i dati in gruppi simili.
@@ -30,8 +31,11 @@ La cartella **datapreprocessing** contiene file e sotto-cartelle per la preparaz
 
 
 
-### Graph
-La cartella **graph** contiene grafici che visualizzano i risultati dei test effettuati, mostrando le performance dei modelli di clustering e selezione delle feature.
+### Graphs
+La cartella **graphs** contiene grafici che visualizzano i risultati dei test effettuati, mostrando le performance dei modelli di clustering e selezione delle feature.
+
+### Saved_models
+La cartella **Saved_models** contiene un file pickle con un modello di clustering KMeans salvato.
 
 ### Altri File
 - **.gitignore**: Definisce i file e le cartelle da ignorare nel repository Git.
@@ -41,6 +45,34 @@ La cartella **graph** contiene grafici che visualizzano i risultati dei test eff
 **Logging**:
    - Lo script utilizza il logging per segnalare eventuali errori, come file non trovati o problemi nella formattazione dei dati, e per indicare il completamento del processo.
 
+### ManageData.py
+
+La classe `ManageData` gestisce l'intero processo di preprocessing, analisi e clustering del dataset per l'analisi dei servizi di teleassistenza. 
+
+#### Funzionalità Principali:
+
+1. **replace_none_with_nan**: Sostituisce i valori 'None' e `None` con `NaN` all'interno del dataset per standardizzare i valori mancanti.
+
+2. **log_missing_values**: Logga le colonne del dataset che contengono valori mancanti, fornendo un conteggio dettagliato per ogni colonna.
+
+3. **save_dataset**: Salva il dataset processato in formato Parquet.
+
+4. **print_columns**: Logga e stampa l'elenco delle colonne presenti nel dataset.
+
+5. **clean_data**: Esegue un ciclo completo di pulizia del dataset:
+    - Rimuove cancellazioni (`data_disdetta` non nullo).
+    - Riempie i campi comuni e province utilizzando dati esterni.
+    - Rimuove duplicati e colonne non necessarie.
+    - Gestisce i valori mancanti in base a una soglia di tolleranza configurabile.
+      
+6. **run_analysis**: Esegue il ciclo completo di analisi, che include:
+    - Pulizia del dataset.
+    - Aggiunta della durata della visita e calcolo dell'età del paziente.
+    - Identificazione e gestione degli outlier.
+    - Selezione delle feature più rilevanti attraverso la **FeatureSelection**.
+    - Estrazione di nuove feature attraverso la **FeatureExtractor**.
+    - Applicazione del clustering attraverso la classe **Clustering** e salvataggio del dataset con l'aggiunta delle etichette di cluster.
+    - Visualizzazione e salvataggio dei grafici tramite la classe **DataPlot**.
 
 ### Datacleaner.py
 
@@ -104,7 +136,95 @@ La cartella **graph** contiene grafici che visualizzano i risultati dei test eff
    - Utilizzare le funzioni descritte per caricare i dati dai file JSON e processare il dataset, riempiendo i valori mancanti e aggiungendo nuove colonne come 'durata_visita' ed 'eta_paziente'.
 
 
-# Feature Selection
+### DataPlot,py
+
+
+#### Metodi Principali
+
+1. **save_plot(self, plt, filename)**: Salva il grafico generato nella directory 'graphs'.
+
+2. **plot_cluster_distribution(self)**: 
+   - Crea un grafico a barre per visualizzare la distribuzione dei cluster nel dataset.
+
+3. **plot_sex_distribution_by_cluster(self)**: 
+   - Visualizza la distribuzione di genere nei vari cluster.
+
+4. **plot_age_distribution_by_cluster(self)**: 
+   - Mostra la distribuzione delle fasce di età nei cluster.
+
+5. **plot_visit_duration_by_cluster(self)**: 
+   - Visualizza la durata media delle visite per ciascun cluster.
+
+6. **plot_cluster_by_region(self)**: 
+   - Mostra la distribuzione dei cluster per regione di residenza.
+
+7. **plot_cluster_by_structure_type(self)**: 
+   - Visualizza la distribuzione dei cluster per tipologia di struttura di erogazione.
+
+8. **plot_increment_by_cluster(self)**: 
+   - Mostra la distribuzione degli incrementi classificati per ciascun cluster.
+
+9. **plot_cluster_by_quarter(self)**: 
+   - Visualizza la distribuzione dei cluster per trimestre.
+
+10. **generate_plots(self)**: 
+    - Esegue tutti i grafici disponibili e li salva nella directory 'graphs'.
+
+## Output
+
+Tutti i grafici sono salvati nella directory 'graphs'. I principali grafici includono:
+- **Distribuzione dei Cluster** (`cluster_distribution.png`)
+  
+- **Distribuzione del Sesso nei Cluster** (`sex_distribution_by_cluster.png`)
+  
+- **Distribuzione delle Fasce d'Età nei Cluster** (`age_distribution_by_cluster.png`)
+  
+- **Durata delle Visite per Cluster** (`visit_duration_by_cluster.png`)
+  
+- **Distribuzione dei Cluster per Regione** (`cluster_by_region.png`)
+  
+- **Distribuzione dei Cluster per Tipologia di Struttura** (`cluster_by_structure_type.png`)
+  
+- **Incremento Classificato per Cluster** (`increment_by_cluster.png`)
+  
+- **Distribuzione dei Cluster per Trimestre** (`cluster_by_quarter.png`)
+
+### Clustering.py
+
+- **n_clusters**: Numero di cluster per KModes.
+- **use_one_hot**: Se impostato su True, utilizza One-Hot Encoding per le variabili categoriali, altrimenti utilizza Label Encoding.
+
+#### Metodi Principali
+
+1. **get_dataset_clustered()**: Restituisce il dataset con le etichette dei cluster.
+   
+2. **elbow_method(self, dataset, min_clusters=4, max_clusters=10)**: Esegue l'Elbow Method per determinare il numero ottimale di cluster e salva il grafico.
+
+3. **preprocess_data(self, dataset)**: Trasforma le variabili categoriali usando One-Hot o Label Encoding, e standardizza i dati per il clustering.
+
+4. **fit(self, dataset)**: Esegue il clustering con KModes, calcola il silhouette score, e restituisce il dataset con le etichette dei cluster.
+
+5. **calculate_purity(self, dataset, label_column='incremento_classificato')**: Calcola la purezza del clustering basata su una colonna di riferimento.
+
+6. **plot_clusters(self, dataset)**: Crea e salva un grafico 2D e un silhouette plot dei cluster.
+
+7. **plot_clusters_3d(self, dataset)**: Crea e salva un grafico 3D dei cluster utilizzando PCA.
+
+8. **run_clustering(self, dataset, label_column='incremento_classificato', excluded_columns=None)**: Esegue l'intero processo di clustering, inclusi clustering, calcolo della purezza, plotting e salvataggio dei risultati.
+
+## Output
+
+- **Grafici Salvati**: Tutti i grafici sono salvati nella directory `graphs`:
+  - **Elbow Method** (`elbow_method.png`)
+  - **PCA Plot 2D** (`pca_clusters.png`)
+  - **PCA Plot 3D** (`pca_clusters_3d.png`)
+  - **Silhouette Plot** (`silhouette_plot.png`)
+
+- **Risultati Clustering**: I risultati del clustering vengono salvati nella directory `results` in formato JSON:
+  - **clustering_results.json**: Contiene le informazioni su colonne escluse/utilizzate, numero di cluster, silhouette score medio, purezza e metrica finale.
+
+
+### FeatureSelection.py
 
 ## Descrizione
 
@@ -134,7 +254,7 @@ Crea una matrice di correlazione utilizzando Cramér's V per tutte le colonne ca
 
 •	I grafici saranno salvati nella directory ‘ graphs ‘ con il nome ‘ combined_plot.png ‘.
 
-# Feature Extraction
+### FeatureExtraction.py
 
 ## Descrizione
 

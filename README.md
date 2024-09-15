@@ -10,20 +10,23 @@ Questo progetto mira a profilare i pazienti in base al loro utilizzo del servizi
 - Fornire insight per migliorare la qualità del servizio e personalizzare le cure.
 - Ridurre il carico sugli ospedali favorendo la deospedalizzazione.
 
-## Struttura del Progetto
+## Struttura del Progetto e relative cartelle
 
 ### Data
 - **Sottocartella Italia**: Contiene file JSON con dati sui comuni, regioni e province italiane. Questi dati vengono utilizzati per creare le logiche di processamento.
+- **challenge_campus_biomedico_2024.paquet**
+- **dataset_clustered.parquet**
+- **extractor_dataset.parquet**
 
 ### Data Preprocessing
 La cartella **datapreprocessing** contiene file e sotto-cartelle per la preparazione dei dati utilizzati per l'analisi AI.
 
-#### Sottocartella manage
+#### Sottocartella Managage
 - **datafix**: Corregge errori o incongruenze nei dati.
 - **datacleaner**: Pulisce i dati, eliminando duplicati e valori mancanti.
 - **dataplot** : Si occupa di generare e salvare grafici che visualizzano la distribuzione dei cluster.
 
-#### File Principali
+#### Altri file in Datapreprocessing
 - **clustering**: Organizza i dati in gruppi simili.
 - **featureselection**: Seleziona le feature più rilevanti per il modello.
 - **featureextractor**: Estrae nuove feature dai dati grezzi.
@@ -35,15 +38,20 @@ La cartella **datapreprocessing** contiene file e sotto-cartelle per la preparaz
 La cartella **graphs** contiene grafici che visualizzano i risultati dei test effettuati, mostrando le performance dei modelli di clustering e selezione delle feature.
 
 ### Saved_models
-La cartella **Saved_models** contiene un file pickle con un modello di clustering KMeans salvato.
+La cartella **saved_models** contiene un file pickle con un modello di clustering KMeans salvato.
+
+### Results
+Contiene un file Json per i risultati ottenuti es. Silhouette, purity ecc.
+
 
 ### Altri File
 - **.gitignore**: Definisce i file e le cartelle da ignorare nel repository Git.
-- **main**: Coordina tutte le operazioni, dal preprocessamento all'analisi dei dati.
+- **main.py**: Coordina tutte le operazioni, dal preprocessamento all'analisi dei dati.
+- **Readme** 
 
 ### Gestione dei log del programma
 **Logging**:
-   - Lo script utilizza il logging per segnalare eventuali errori, come file non trovati o problemi nella formattazione dei dati, e per indicare il completamento del processo.
+   - Tutto lo script utilizza il logging per segnalare eventuali errori, come file non trovati o problemi nella formattazione dei dati, e per indicare il completamento del processo.
 
 ### ManageData.py
 
@@ -126,14 +134,6 @@ La classe `ManageData` gestisce l'intero processo di preprocessing, analisi e cl
 8. **colonne_to_category(df, colonne)**:
    - Converte le colonne specificate in 'category' per ottimizzare la memoria.
 
-#### Come Utilizzare:
-
-1. **Dati di Input**:
-   - Fornire i file JSON contenenti le informazioni su province e comuni, in modo che possano essere utilizzati per riempire i campi mancanti nel dataset.
-   - Assicurarsi che il dataset contenga le colonne necessarie come `comune_residenza`, `provincia_residenza`, `ora_inizio_erogazione`, `data_nascita`, ecc.
-
-2. **Processo**:
-   - Utilizzare le funzioni descritte per caricare i dati dai file JSON e processare il dataset, riempiendo i valori mancanti e aggiungendo nuove colonne come 'durata_visita' ed 'eta_paziente'.
 
 
 ### DataPlot,py
@@ -282,11 +282,17 @@ Questa classe **FeatureExtractor** è progettata per analizzare un dataset, iden
   ## Output
 
    - Heatmap delle correlazioni (iniziale e finale) salvate in graphs.
-   -  Dataset ottimizzato senza variabili altamente correlate.
+   - Dataset ottimizzato senza variabili altamente correlate.
      
 	 
 
 
+### Conclusioni
 
+Il progetto di **Clustering Supervisionato per la Teleassistenza** ha dimostrato come l'analisi dei dati e l'applicazione di tecniche di clustering possano migliorare significativamente la gestione e l'efficacia dei servizi di teleassistenza. Attraverso la profilazione dei pazienti basata su caratteristiche rilevanti, come età, durata delle visite, e distribuzione geografica, è possibile individuare pattern utili per personalizzare le cure e ridurre il carico sugli ospedali.
+
+L'integrazione di strumenti avanzati come la selezione delle feature, l'estrazione delle caratteristiche, e la gestione dei dati, ha permesso di realizzare un workflow efficiente che può essere applicato a contesti reali di teleassistenza. La combinazione di algoritmi di clustering e tecniche di visualizzazione dei dati ha portato a una maggiore comprensione delle dinamiche del servizio, favorendo decisioni informate per migliorare la qualità dell'assistenza sanitaria a distanza.
+
+I risultati ottenuti forniscono una base solida per ulteriori sviluppi, tra cui l'ottimizzazione del modello di clustering e l'implementazione di nuovi algoritmi per migliorare la precisione e la granularità dell'analisi. 
 
 

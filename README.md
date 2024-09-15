@@ -31,8 +31,11 @@ La cartella **datapreprocessing** contiene file e sotto-cartelle per la preparaz
 
 
 
-### Graph
-La cartella **graph** contiene grafici che visualizzano i risultati dei test effettuati, mostrando le performance dei modelli di clustering e selezione delle feature.
+### Graphs
+La cartella **graphs** contiene grafici che visualizzano i risultati dei test effettuati, mostrando le performance dei modelli di clustering e selezione delle feature.
+
+### Saved_models
+La cartella **Saved_models** contiene un file pickle con un modello di clustering KMeans salvato.
 
 ### Altri File
 - **.gitignore**: Definisce i file e le cartelle da ignorare nel repository Git.

@@ -113,18 +113,18 @@ class ManageData:
 
         # Rimuove colonne non più necessarie
         #columns = ['ora_inizio_erogazione', 'ora_fine_erogazione',
-        #           'id_prenotazione', 'id_paziente', 'regione_residenza', 'codice_regione_residenza',
+        #           'id_prenotazione', 'id_paziente', 'codice_regione_residenza', 'codice_regione_residenza',
         #           'asl_residenza', 'codice_asl_residenza', 'provincia_residenza',
-        #           'comune_residenza', 'codice_comune_residenza', 'descrizione_attivita',
+        #           'comune_residenza', 'codice_comune_residenza', 'codice_descrizione_attivita',
         #           'data_contatto', 'regione_erogazione', 'asl_erogazione', 'provincia_erogazione',
-        #           'tipologia_struttura_erogazione', 'id_professionista_sanitario',
-        #           'tipologia_professionista_sanitario', 'codice_tipologia_professionista_sanitario']
+        #           'codice_tipologia_struttura_erogazione', 'id_professionista_sanitario',
+        #           'codice_tipologia_professionista_sanitario', 'codice_tipologia_professionista_sanitario']
 
         columns = ['id_paziente', 'tipologia_servizio', 'ora_inizio_erogazione', 'ora_fine_erogazione','data_contatto',
-                   'regione_residenza', 'provincia_residenza', 'comune_residenza',
-                   'descrizione_attivita', 'regione_erogazione', 'asl_erogazione', 'provincia_erogazione',
-                   'tipologia_professionista_sanitario',
-                   'regione_residenza', 'struttura_erogazione', 'tipologia_struttura_erogazione',
+                   'codice_regione_residenza', 'provincia_residenza', 'comune_residenza',
+                   'codice_descrizione_attivita', 'regione_erogazione', 'asl_erogazione', 'provincia_erogazione',
+                   'codice_tipologia_professionista_sanitario',
+                   'struttura_erogazione', 'codice_tipologia_struttura_erogazione',
                    'asl_residenza', 'outlier', 'eta_paziente']
         df = DataCleaner.remove_columns(df, columns)
 
@@ -143,7 +143,7 @@ class ManageData:
         #  'codice_asl_residenza', 'codice_provincia_residenza',
         #  'codice_comune_residenza', 'codice_descrizione_attivita',
         #  'codice_regione_erogazione', 'codice_asl_erogazione', 'codice_provincia_erogazione',
-        #  'codice_struttura_erogazione', 'codice_tipologia_struttura_erogazione',
+        #  'codice_struttura_erogazione', 'codice_codice_tipologia_struttura_erogazione',
         #  'id_professionista_sanitario', 'codice_tipologia_professionista_sanitario',
         #  'data_erogazione', 'durata_visita', 'fascia_eta']
 
@@ -169,7 +169,7 @@ class ManageData:
 
         # Colonne presenti nel dataset
         # ['id_prenotazione', 'sesso', 'codice_regione_residenza',
-        #  'codice_descrizione_attivita', 'codice_tipologia_struttura_erogazione',
+        #  'codice_descrizione_attivita', 'codice_codice_tipologia_struttura_erogazione',
         #  'id_professionista_sanitario', 'codice_tipologia_professionista_sanitario',
         #  'data_erogazione', 'durata_visita', 'fascia_eta']
 
@@ -186,7 +186,7 @@ class ManageData:
 
         # Colonne presenti nel dataset
         # ['id_prenotazione', 'sesso', 'codice_regione_residenza',
-        #  'codice_descrizione_attivita', 'codice_tipologia_struttura_erogazione',
+        #  'codice_descrizione_attivita', 'codice_codice_tipologia_struttura_erogazione',
         #  'id_professionista_sanitario', 'codice_tipologia_professionista_sanitario',
         #  'data_erogazione', 'durata_visita', 'fascia_eta', 'trimestre',
         #  'anno', 'incremento_classificato']        

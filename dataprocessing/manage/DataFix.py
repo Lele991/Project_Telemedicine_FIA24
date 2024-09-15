@@ -208,7 +208,7 @@ def fill_durata_visita(dataset):
     """
     Calcola la durata della visita per le righe in cui 'durata_visita' è nulla.
     Per le righe mancanti di 'ora_inizio_erogazione' o 'ora_fine_erogazione',
-    utilizza la media delle durate per il tipo di servizio offerto ('codice_descrizione_attivita').
+    utilizza la media delle durate per il tipo di servizio offerto ('descrizione_attivita').
     """
     missing_durata = dataset['durata_visita'].isnull()
 
@@ -219,10 +219,10 @@ def fill_durata_visita(dataset):
     ).dt.total_seconds() / 60
 
     # Gestisce i casi in cui mancano 'ora_inizio_erogazione' o 'ora_fine_erogazione'
-    durata_media_per_servizio = dataset.groupby('codice_descrizione_attivita')['durata_visita'].mean()
+    durata_media_per_servizio = dataset.groupby('descrizione_attivita')['durata_visita'].mean()
 
     dataset['durata_visita'] = dataset.apply(
-        lambda row: durata_media_per_servizio[row['codice_descrizione_attivita']] 
+        lambda row: durata_media_per_servizio[row['descrizione_attivita']] 
         if pd.isnull(row['durata_visita']) else row['durata_visita'], axis=1
     )
 

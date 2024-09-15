@@ -110,7 +110,7 @@ def handle_missing_values(dataset, strategy='mean'):
 
     return dataset_imputed
 
-def update_dataset_with_outliers(dataset, relevant_columns = ['eta_paziente', 'durata_visita', 'codice_descrizione_attivita'], contamination=0.05, action='remove'):
+def update_dataset_with_outliers(dataset, relevant_columns = ['eta_paziente', 'durata_visita', 'descrizione_attivita'], contamination=0.05, action='remove'):
     """
     Identifica e gestisce gli outlier usando un approccio ibrido che combina Isolation Forest e Local Outlier Factor.
     

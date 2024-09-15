@@ -46,14 +46,14 @@ class FeatureExtractor:
         """
         logging.info("Inizio del calcolo degli incrementi percentuali.")
 
-        # Raggruppamento per anno, trimestre e codice_descrizione_attivita, conteggio del numero di servizi
-        grouped = self.dataset.groupby(['anno', 'trimestre', 'codice_descrizione_attivita']).size().reset_index(name='numero_servizi')
+        # Raggruppamento per anno, trimestre e descrizione_attivita, conteggio del numero di servizi
+        grouped = self.dataset.groupby(['anno', 'trimestre', 'descrizione_attivita']).size().reset_index(name='numero_servizi')
 
-        # Ordinamento per 'codice_descrizione_attivita', 'anno', 'trimestre'
-        grouped = grouped.sort_values(by=['codice_descrizione_attivita', 'anno', 'trimestre'])
+        # Ordinamento per 'descrizione_attivita', 'anno', 'trimestre'
+        grouped = grouped.sort_values(by=['descrizione_attivita', 'anno', 'trimestre'])
 
         # Calcolo della differenza (incremento) del numero di servizi
-        grouped['incremento'] = grouped.groupby('codice_descrizione_attivita')['numero_servizi'].diff()
+        grouped['incremento'] = grouped.groupby('descrizione_attivita')['numero_servizi'].diff()
 
         # Calcolo dell'incremento percentuale
         grouped['incremento_percentuale'] = (
@@ -101,8 +101,8 @@ class FeatureExtractor:
         # Unisce i risultati al dataset originale
         self.dataset = pd.merge(
             self.dataset, 
-            grouped[['anno', 'trimestre', 'codice_descrizione_attivita', 'incremento_classificato']],
-            on=['anno', 'trimestre', 'codice_descrizione_attivita'], 
+            grouped[['anno', 'trimestre', 'descrizione_attivita', 'incremento_classificato']],
+            on=['anno', 'trimestre', 'descrizione_attivita'], 
             how='left'
         )
 

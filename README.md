@@ -21,7 +21,7 @@ Questo progetto mira a profilare i pazienti in base al loro utilizzo del servizi
 ### Data Preprocessing
 La cartella **datapreprocessing** contiene file e sotto-cartelle per la preparazione dei dati utilizzati per l'analisi AI.
 
-#### Sottocartella Managage
+#### Sottocartella Manage
 - **datafix**: Corregge errori o incongruenze nei dati.
 - **datacleaner**: Pulisce i dati, eliminando duplicati e valori mancanti.
 - **dataplot** : Si occupa di generare e salvare grafici che visualizzano la distribuzione dei cluster.

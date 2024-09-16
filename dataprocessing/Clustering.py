@@ -8,10 +8,12 @@ from sklearn.decomposition import PCA
 from sklearn.discriminant_analysis import StandardScaler
 from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import silhouette_score, silhouette_samples
+from sklearn.model_selection import train_test_split
 import numpy as np
 import logging
 from collections import Counter
 from kmodes.kmodes import KModes
+from kneed import KneeLocator
 
 class Clustering:
     def __init__(self, n_clusters=4, use_one_hot=False):
@@ -54,35 +56,47 @@ class Clustering:
         else:
             logging.info("Nessun valore nullo trovato nel dataset.")
 
-    def elbow_method(self, dataset, min_clusters=4, max_clusters=10):
+    def stratified_downsample(self, dataset, target_column, fraction=0.3):
+        """
+        Riduce il dataset mantenendo la proporzione delle classi nel target.
+        :param target_column: La colonna in base alla quale effettuare il campionamento stratificato.
+        :param fraction: La frazione del dataset da mantenere (0.1 = 10%)
+        :return: Un dataset ridotto
+        """
+        df_reduced, _ = train_test_split(dataset, test_size=1-fraction, stratify=dataset[target_column], random_state=42)
+        return df_reduced
+
+    def elbow_method(self, dataset, min_clusters=2, max_clusters=10, threshold=0.05):
         """
         Esegue l'Elbow Method per determinare il numero ottimale di cluster.
         :param dataset: Dataset preprocessato.
-        :param min_clusters: Numero minimo di cluster. Default = 4.
+        :param min_clusters: Numero minimo di cluster.
         :param max_clusters: Numero massimo di cluster.
+        :param threshold: Threshold per individuare la differenza significativa tra distorsioni.
         :return: Il numero ottimale di cluster (k).
         """
         logging.info("Inizio dell'Elbow Method per determinare il numero ottimale di cluster.")
-                    
-        # Creare la directory 'graphs' se non esiste
+
+        # Crea la directory 'graphs' se non esiste
         output_dir = 'graphs'
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
             logging.info(f"Creata cartella '{output_dir}' per salvare i grafici.")
 
         distortions = []
-        
+        dataset = self.stratified_downsample(dataset, 'incremento_classificato')
+
         # Calcola la distorsione per ogni valore di k
         for k in range(min_clusters, max_clusters + 1):
-            kmodes = KModes(n_clusters=k, init='Huang', n_init=1, verbose=0)  # KModes clustering
-            labels = kmodes.fit_predict(dataset)  # Predici le etichette per ogni k
-            distortions.append(kmodes.cost_)  # Aggiungi la distorsione (costo del clustering)
+            kmodes = KModes(n_clusters=k, init='Huang', n_init=5, verbose=0)
+            labels = kmodes.fit_predict(dataset)
+            distortions.append(kmodes.cost_)
             logging.info(f"Distortion per k={k}: {kmodes.cost_}")
 
         # Generare il plot dell'Elbow Method
         plt.figure(figsize=(8, 6))
-        plt.plot(range(min_clusters, max_clusters + 1), distortions, 'bo-')  # Rimuovi marker e color ridondanti
-        plt.xticks(ticks=range(min_clusters, max_clusters + 1))  # Imposta solo i valori interi sull'asse x
+        plt.plot(range(min_clusters, max_clusters + 1), distortions, 'bo-')
+        plt.xticks(ticks=range(min_clusters, max_clusters + 1))
         plt.xlabel('Numero di Cluster (k)')
         plt.ylabel('Distortion')
         plt.title('Elbow Method per determinare il numero ottimale di cluster')
@@ -92,14 +106,20 @@ class Clustering:
 
         logging.info(f"Elbow plot salvato con successo in '{elbow_plot_path}'.")
 
-        logging.info(f"Distortion values: {distortions}")
-        
-        # Trova il numero ottimale di cluster (gomito)
-        max_distortion_idx = np.argmax(distortions)  # Trova l'indice del valore di distorsione massimo
-        optimal_k = max_distortion_idx + min_clusters
+        # Calcola la differenza di distorsione tra k consecutivi
+        distortion_diffs = np.diff(distortions)
+        logging.info(f"Differenze di distorsione: {distortion_diffs}")
+
+        # Trova il punto dove la differenza tra le distorsioni diminuisce di meno del threshold
+        for i in range(len(distortion_diffs) - 1):
+            if abs(distortion_diffs[i + 1] - distortion_diffs[i]) < threshold:
+                optimal_k = i + min_clusters + 1
+                break
+        else:
+            optimal_k = 4
 
         logging.info(f"Numero ottimale di cluster secondo il metodo Elbow: {optimal_k}")
-        
+
         # Aggiorna il numero di cluster
         self.n_clusters = optimal_k
 
@@ -397,7 +417,7 @@ class Clustering:
             logging.info(f"Colonne escluse dal clustering: {excluded_columns}")
 
         # Esegui l'Elbow Method per trovare il numero ottimale di cluster
-        #self.elbow_method(dataset, min_clusters=4, max_clusters=6)
+        self.elbow_method(dataset, min_clusters=2, max_clusters=6)
 
 
         # Esegui clustering utilizzando tutte le colonne trasformate

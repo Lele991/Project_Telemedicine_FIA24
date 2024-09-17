@@ -82,31 +82,33 @@ La classe `ManageData` gestisce l'intero processo di preprocessing, analisi e cl
     - Applicazione del clustering attraverso la classe **Clustering** e salvataggio del dataset con l'aggiunta delle etichette di cluster.
     - Visualizzazione e salvataggio dei grafici tramite la classe **DataPlot**.
 
+
 ### Datacleaner.py
 
-1. **remove_duplicates(dataset)**
+1. **remove_duplicates(dataset)**:
    - Rimuove righe duplicate dal dataset.
    - Registra nel log quante righe duplicate sono state rimosse.
 
-2. **remove_missing_values_rows(dataset, null_threshold=0.6)**
-   - Rimuove le colonne che hanno una percentuale di valori nulli superiore a una soglia (default: 60%).
+2. **remove_missing_values_rows(dataset, null_threshold=0.6)**:
+   - Rimuove le colonne che hanno una percentuale di valori nulli superiore alla soglia specificata (default: 60%).
    - Registra nel log quali colonne sono state eliminate.
 
-3. **remove_disdette(dataset)**
-   - Rimuove le righe in cui `data_disdetta` non è nullo, ossia le cancellazioni.
+3. **remove_disdette(dataset)**:
+   - Rimuove le righe in cui la colonna `data_disdetta` non è nulla (ossia le cancellazioni).
    - Registra nel log quante righe sono state rimosse.
 
-4. **remove_columns(dataset, columns)**
+4. **remove_columns(dataset, columns)**:
    - Elimina dal dataset le colonne specificate.
+   - Registra nel log le colonne che sono state rimosse o notifica se nessuna colonna specificata è stata trovata.
 
-5. **handle_missing_values(dataset, strategy='mean')**
-   - Riempie i valori mancanti in base alla strategia scelta (default: media).
-   - Registra nel log il numero di valori mancanti trovati e gestiti.
+5. **handle_missing_values(dataset, strategy='mean')**:
+   - Gestisce i valori mancanti nel dataset, riempiendo i valori nulli in base alla strategia scelta (default: media, altre opzioni: 'median', 'mode').
+   - Registra nel log il numero di valori mancanti trovati e gestiti, specificando la strategia utilizzata.
 
-6. **update_dataset_with_outliers(dataset, contamination=0.05, action='remove')**
-   - Identifica e gestisce gli outlier con un approccio combinato tra **Isolation Forest** e **Local Outlier Factor**.
-   - Gli outlier possono essere rimossi o marcati, a seconda dell'azione scelta.
-
+6. **update_dataset_with_outliers(dataset, relevant_columns=['eta_paziente', 'durata_visita', 'descrizione_attivita'], contamination=0.05, action='remove')**:
+   - Identifica e gestisce gli outlier con un approccio ibrido che combina **Isolation Forest** e **Local Outlier Factor**.
+   - Gli outlier possono essere rimossi o segnati, a seconda del parametro `action` (default: 'remove').
+   - Registra nel log quanti outlier sono stati trovati e l'azione intrapresa.
 
 ### Datafix.py
 
@@ -189,39 +191,40 @@ Tutti i grafici sono salvati nella directory 'graphs'. I principali grafici incl
   
 - **Distribuzione dei Cluster per Trimestre** (`cluster_by_quarter.png`)
 
-### Clustering.py
 
-- **n_clusters**: Numero di cluster per KModes.
-- **use_one_hot**: Se impostato su True, utilizza One-Hot Encoding per le variabili categoriali, altrimenti utilizza Label Encoding.
+## Clustering.py
 
-#### Metodi Principali
+### Parametri Principali
+- **n_clusters**: Numero di cluster da utilizzare nel modello KModes.
+- **use_one_hot**: Se impostato su True, utilizza One-Hot Encoding per le variabili categoriali; altrimenti utilizza Label Encoding.
 
-1. **get_dataset_clustered()**: Restituisce il dataset con le etichette dei cluster.
-   
-2. **elbow_method(self, dataset, min_clusters=4, max_clusters=10)**: Esegue l'Elbow Method per determinare il numero ottimale di cluster e salva il grafico.
+### Metodi Principali
+- **get_dataset_clustered()**: Restituisce il dataset con le etichette assegnate ai cluster.
+  
+- **elbow_method(self, dataset, min_clusters=2, max_clusters=6, threshold=0.05)**: Esegue l'Elbow Method per determinare il numero ottimale di cluster e salva il grafico nella directory graphs. Usa un'euristica basata su un threshold per identificare l'angolo (elbow) nel grafico delle distorsioni.
 
-3. **preprocess_data(self, dataset)**: Trasforma le variabili categoriali usando One-Hot o Label Encoding, e standardizza i dati per il clustering.
+- **preprocess_data(self, dataset)**: Trasforma le variabili categoriali in numeriche usando One-Hot o Label Encoding, e standardizza i dati numerici per il clustering. Restituisce il dataset preprocessato e l'array dei cluster.
 
-4. **fit(self, dataset)**: Esegue il clustering con KModes, calcola il silhouette score, e restituisce il dataset con le etichette dei cluster.
+- **fit(self, dataset)**: Esegue il clustering con KModes, calcola il Silhouette Score e restituisce il dataset con le etichette assegnate ai cluster. Viene effettuata una verifica preliminare per rilevare valori nulli nel dataset.
 
-5. **calculate_purity(self, dataset, label_column='incremento_classificato')**: Calcola la purezza del clustering basata su una colonna di riferimento.
+- **calculate_purity(self, dataset, label_column='incremento_classificato')**: Calcola la purezza del clustering confrontando le etichette assegnate ai cluster con una colonna di riferimento (es. incremento_classificato). Supporta dataset trasformati con One-Hot Encoding.
 
-6. **plot_clusters(self, dataset)**: Crea e salva un grafico 2D e un silhouette plot dei cluster.
+- **plot_clusters(self, dataset)**: Crea e salva un grafico bidimensionale (2D) dei cluster usando la PCA per ridurre le dimensioni e un Silhouette plot. Entrambi i grafici vengono salvati nella directory graphs.
 
-7. **plot_clusters_3d(self, dataset)**: Crea e salva un grafico 3D dei cluster utilizzando PCA.
+- **plot_clusters_3d(self, dataset)**: Crea e salva un grafico tridimensionale (3D) dei cluster, utilizzando la PCA per ridurre le dimensioni a 3 componenti principali. Il grafico viene salvato nella directory graphs.
 
-8. **run_clustering(self, dataset, label_column='incremento_classificato', excluded_columns=None)**: Esegue l'intero processo di clustering, inclusi clustering, calcolo della purezza, plotting e salvataggio dei risultati.
+- **run_clustering(self, dataset, label_column='incremento_classificato', excluded_columns=None)**: Esegue l'intero processo di clustering, che include il preprocessing dei dati, l'esecuzione del clustering, il calcolo della purezza, la creazione dei grafici e il salvataggio dei risultati finali.
 
-## Output
+### Output
 
-- **Grafici Salvati**: Tutti i grafici sono salvati nella directory `graphs`:
-  - **Elbow Method** (`elbow_method.png`)
-  - **PCA Plot 2D** (`pca_clusters.png`)
-  - **PCA Plot 3D** (`pca_clusters_3d.png`)
-  - **Silhouette Plot** (`silhouette_plot.png`)
+- **Grafici Salvati**: Tutti i grafici generati durante il processo di clustering vengono salvati nella directory graphs:
+  - Elbow Method (elbow_method.png)
+  - PCA Plot 2D (pca_clusters.png)
+  - PCA Plot 3D (pca_clusters_3d.png)
+  - Silhouette Plot (silhouette_plot.png)
 
-- **Risultati Clustering**: I risultati del clustering vengono salvati nella directory `results` in formato JSON:
-  - **clustering_results.json**: Contiene le informazioni su colonne escluse/utilizzate, numero di cluster, silhouette score medio, purezza e metrica finale.
+- **Risultati Clustering**: I risultati del clustering vengono salvati nella directory results in formato JSON:
+  - clustering_results.json: Contiene informazioni sulle colonne escluse e utilizzate, il numero di cluster ottimali, il silhouette score medio, la purezza e la metrica finale calcolata.
 
 
 ### FeatureSelection.py
@@ -253,6 +256,7 @@ Crea una matrice di correlazione utilizzando Cramér's V per tutte le colonne ca
 ## Output
 
 •	I grafici saranno salvati nella directory ‘ graphs ‘ con il nome ‘ combined_plot.png ‘.
+
 
 ### FeatureExtraction.py
 

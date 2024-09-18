@@ -1,10 +1,7 @@
-
 # Progetto: Clustering Supervisionato per la Teleassistenza
-
 Questo progetto mira a profilare i pazienti in base al loro utilizzo del servizio di Teleassistenza, utilizzando tecniche di clustering supervisionato. L'obiettivo principale è identificare gruppi di pazienti con comportamenti simili, migliorando così la gestione e l'erogazione delle cure a distanza.
 
 ## Obiettivi
-
 - Comprendere i fattori che determinano l'aumento dell'uso del servizio di Teleassistenza.
 - Identificare pattern ricorrenti tra pazienti con malattie croniche.
 - Fornire insight per migliorare la qualità del servizio e personalizzare le cure.
@@ -12,37 +9,25 @@ Questo progetto mira a profilare i pazienti in base al loro utilizzo del servizi
 
 ## Struttura del Progetto e relative cartelle
 
-### Data
-- **Sottocartella Italia**: Contiene file JSON con dati sui comuni, regioni e province italiane. Questi dati vengono utilizzati per creare le logiche di processamento.
-- **challenge_campus_biomedico_2024.paquet**
-- **dataset_clustered.parquet**
-- **extractor_dataset.parquet**
-
 ### Data Preprocessing
 La cartella **datapreprocessing** contiene file e sotto-cartelle per la preparazione dei dati utilizzati per l'analisi AI.
 
 #### Sottocartella Manage
-- **datafix**: Corregge errori o incongruenze nei dati.
-- **datacleaner**: Pulisce i dati, eliminando duplicati e valori mancanti.
-- **dataplot** : Si occupa di generare e salvare grafici che visualizzano la distribuzione dei cluster.
+- **DataFix**: Corregge errori o incongruenze presenti nel dataset iniziale, garantendo l'integrità dei dati.
+- **DataCleaner**: Pulisce il dataset eliminando duplicati, gestendo valori mancanti e assicurando una struttura dati coerente.
+- **DataPlot**: Genera e salva visualizzazioni grafiche che rappresentano la distribuzione dei cluster e altri aspetti rilevanti dei dati.
 
 #### Altri file in Datapreprocessing
-- **clustering**: Organizza i dati in gruppi simili.
-- **featureselection**: Seleziona le feature più rilevanti per il modello.
-- **featureextractor**: Estrae nuove feature dai dati grezzi.
-- **managedata**: Gestisce il dataset, integrando diverse fasi di preprocessamento.
+- **ManageData**: Gestisce l'intero processo di manipolazione del dataset, coordinando le diverse fasi di preprocessamento come la pulizia, l'integrazione e la trasformazione dei dati.
+- **FeatureSelection**: Identifica e seleziona le feature più rilevanti e utili per il modello, migliorando la performance e riducendo la complessità computazionale.
+- **FeatureExtractor**: Estrae nuove feature significative dai dati grezzi, trasformandoli in una rappresentazione più utile per l'analisi e il training del modello.
+- **Clustering**: Raggruppa i dati in insiemi o cluster di elementi simili, facilitando l'analisi delle strutture nascoste e dei modelli all'interno del dataset.
 
-
-
-### Graphs
-La cartella **graphs** contiene grafici che visualizzano i risultati dei test effettuati, mostrando le performance dei modelli di clustering e selezione delle feature.
-
-### Saved_models
-La cartella **saved_models** contiene un file pickle con un modello di clustering KMeans salvato.
-
-### Results
-Contiene un file Json per i risultati ottenuti es. Silhouette, purity ecc.
-
+### Cartelle
+- La cartella **Data** contiene i dataset e file di supporto per il progetto. Al suo interno, la sottocartella *italia* include file JSON con dati su comuni, regioni e province italiane, mentre i file *challenge_campus_biomedico_2024.paquet*, *extractor_dataset.parquet*, e *dataset_clustered.parquet* rappresentano rispettivamente il dataset principale, il dataset con feature estratte e il dataset clusterizzato.
+- La cartella **graphs** contiene grafici che visualizzano i risultati dei test effettuati, mostrando le performance dei modelli di clustering e selezione delle feature.
+- La cartella **saved_models** contiene un file pickle con un modello di clustering KMeans salvato.
+- La cartella **results** Contiene un file Json per i risultati ottenuti es. Silhouette, purity ecc.
 
 ### Altri File
 - **.gitignore**: Definisce i file e le cartelle da ignorare nel repository Git.

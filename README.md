@@ -12,32 +12,28 @@ Questo progetto mira a profilare i pazienti in base al loro utilizzo del servizi
 ### Data Preprocessing
 La cartella **datapreprocessing** contiene file e sotto-cartelle per la preparazione dei dati utilizzati per l'analisi AI.
 
-#### Sottocartella Manage
-- **DataFix**: Corregge errori o incongruenze presenti nel dataset iniziale, garantendo l'integrità dei dati.
-- **DataCleaner**: Pulisce il dataset eliminando duplicati, gestendo valori mancanti e assicurando una struttura dati coerente.
-- **DataPlot**: Genera e salva visualizzazioni grafiche che rappresentano la distribuzione dei cluster e altri aspetti rilevanti dei dati.
+1. **Sottocartella Manage**:
+   - **DataFix**: Corregge errori o incongruenze presenti nel dataset iniziale, garantendo l'integrità dei dati.
+   - **DataCleaner**: Pulisce il dataset eliminando duplicati, gestendo valori mancanti e assicurando una struttura dati coerente.
+   - **DataPlot**: Genera e salva visualizzazioni grafiche che rappresentano la distribuzione dei cluster e altri aspetti rilevanti dei dati.
 
-#### Altri file in Datapreprocessing
-- **ManageData**: Gestisce l'intero processo di manipolazione del dataset, coordinando le diverse fasi di preprocessamento come la pulizia, l'integrazione e la trasformazione dei dati.
-- **FeatureSelection**: Identifica e seleziona le feature più rilevanti e utili per il modello, migliorando la performance e riducendo la complessità computazionale.
-- **FeatureExtractor**: Estrae nuove feature significative dai dati grezzi, trasformandoli in una rappresentazione più utile per l'analisi e il training del modello.
-- **Clustering**: Raggruppa i dati in insiemi o cluster di elementi simili, facilitando l'analisi delle strutture nascoste e dei modelli all'interno del dataset.
+2. **Altri file in datapreprocessing**:
+   - **ManageData**: Gestisce l'intero processo di manipolazione del dataset, coordinando le diverse fasi di preprocessamento come la pulizia, l'integrazione e la trasformazione dei dati.
+   - **FeatureSelection**: Identifica e seleziona le feature più rilevanti e utili per il modello, migliorando la performance e riducendo la complessità computazionale.
+   - **FeatureExtractor**: Estrae nuove feature significative dai dati grezzi, trasformandoli in una rappresentazione più utile per l'analisi e il training del modello.
+   - **Clustering**: Raggruppa i dati in insiemi o cluster di elementi simili, facilitando l'analisi delle strutture nascoste e dei modelli all'interno del dataset.
 
-### Cartelle
+### Cartelle aggiuntive
 - La cartella **Data** contiene i dataset e file di supporto per il progetto. Al suo interno, la sottocartella *italia* include file JSON con dati su comuni, regioni e province italiane, mentre i file *challenge_campus_biomedico_2024.paquet*, *extractor_dataset.parquet*, e *dataset_clustered.parquet* rappresentano rispettivamente il dataset principale, il dataset con feature estratte e il dataset clusterizzato.
 - La cartella **graphs** contiene grafici che visualizzano i risultati dei test effettuati, mostrando le performance dei modelli di clustering e selezione delle feature.
 - La cartella **saved_models** contiene un file pickle con un modello di clustering KMeans salvato.
 - La cartella **results** Contiene un file Json per i risultati ottenuti es. Silhouette, purity ecc.
 
-### Altri File
-- **.gitignore**: Definisce i file e le cartelle da ignorare nel repository Git.
-- **main.py**: Coordina tutte le operazioni, dal preprocessamento all'analisi dei dati.
-- **Readme** 
+### Gestione di logging
+- Tutto lo script utilizza il logging per segnalare eventuali errori, come file non trovati o problemi nella formattazione dei dati, e per indicare il completamento del processo.
 
-### Gestione dei log del programma
-**Logging**:
-   - Tutto lo script utilizza il logging per segnalare eventuali errori, come file non trovati o problemi nella formattazione dei dati, e per indicare il completamento del processo.
 ---
+
 ## ManageData.py
 Questo file gestisce l'intero flusso di preprocessing, analisi e clustering dei dati relativi ai servizi di teleassistenza, assicurando che il dataset sia pulito, preparato e organizzato per l'analisi e il clustering.
 #### Funzionalità principali:

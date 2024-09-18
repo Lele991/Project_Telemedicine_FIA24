@@ -34,7 +34,7 @@ La cartella **datapreprocessing** contiene file e sotto-cartelle per la preparaz
 
 ---
 
-## ManageData.py
+## ManageData.py ([X](https://github.com/Lele991/Project_Telemedicine_FIA24/blob/main/README_funzioni.md#managedatapy))
 Questo file gestisce l'intero flusso di preprocessing, analisi e clustering dei dati relativi ai servizi di teleassistenza, assicurando che il dataset sia pulito, preparato e organizzato per l'analisi e il clustering.
 #### Funzionalità principali:
 - Sostituisce valori mancanti e standardizza i dati per migliorare la qualità del dataset.
@@ -46,7 +46,7 @@ Questo file gestisce l'intero flusso di preprocessing, analisi e clustering dei 
 - Applica il clustering per organizzare i dati in gruppi e aggiunge etichette di cluster al dataset.
 - Genera grafici per visualizzare i risultati dell'analisi e del clustering, facilitando l'interpretazione dei dati.
 
-## DataFix.py
+## DataFix.py ([X](https://github.com/Lele991/Project_Telemedicine_FIA24/blob/main/README_funzioni.md#datafixpy))
 Questo file gestisce la correzione e l'arricchimento dei dati all'interno del dataset. Fornisce funzionalità per completare campi mancanti, correggere valori errati, e aggiungere nuove colonne derivate dai dati esistenti.
 #### Funzionalità principali:
 - Carica e utilizza dati esterni per mappare codici a nomi di province e comuni, facilitando la correzione di campi relativi alla localizzazione.
@@ -55,7 +55,7 @@ Questo file gestisce la correzione e l'arricchimento dei dati all'interno del da
 - Introduce una categorizzazione delle età in fasce, standardizzando i dati dei pazienti.
 - Converte colonne in tipi categorici per ottimizzare l'uso della memoria nel dataset.
 
-## DataCleaner.py
+## DataCleaner.py ([X](https://github.com/Lele991/Project_Telemedicine_FIA24/blob/main/README_funzioni.md#datacleanerpy))
 Questo file è responsabile della pulizia del dataset, assicurando che i dati siano privi di duplicati, valori mancanti e outlier. Fornisce varie funzioni per gestire dati inconsistenti e prepararli per le fasi successive di analisi e modellazione.
 #### Funzionalità principali:
 - Rimuove righe duplicate e registra nel log il numero di duplicati eliminati.
@@ -65,7 +65,7 @@ Questo file è responsabile della pulizia del dataset, assicurando che i dati si
 - Gestisce i valori mancanti attraverso diverse strategie (media, mediana o moda) e riempie i valori nulli.
 - Identifica e gestisce gli outlier utilizzando algoritmi avanzati come *Isolation Forest* e *Local Outlier Factor*, con opzioni per rimuoverli o segnarli nel dataset.
 
-## FeatureSelection.py
+## FeatureSelection.py ([X](https://github.com/Lele991/Project_Telemedicine_FIA24/blob/main/README_funzioni.md#featureselectionpy))
 La classe `FeatureSelection` è progettata per eseguire la selezione delle caratteristiche categoriali in un dataset. Utilizza la V di Cramér per calcolare la correlazione tra le variabili categoriali e rimuovere le caratteristiche altamente o perfettamente correlate. Fornisce una pipeline completa per gestire la selezione delle feature in un unico passaggio, con visualizzazioni delle correlazioni tramite heatmap.
 #### Funzionalità principali
 - **Calcolo della correlazione categoriale**: Calcola la correlazione tra variabili categoriali utilizzando la V di Cramér.
@@ -75,7 +75,7 @@ La classe `FeatureSelection` è progettata per eseguire la selezione delle carat
 **Output**:
 - Le heatmap di correlazione sono salvate nella directory `graphs` con il nome `combined_plot.png`, mostrando la correlazione delle feature prima e dopo il processo di selezione.
 
-## FeatureExtraction.py
+## FeatureExtraction.py ([X](https://github.com/Lele991/Project_Telemedicine_FIA24/blob/main/README_funzioni.md#featureextractorpy))
 La classe `FeatureExtractor` esegue un'analisi del dataset per calcolare gli incrementi percentuali dei servizi erogati nel tempo, categorizza le variazioni di crescita e crea grafici per visualizzare l'andamento dei dati. Fornisce una pipeline completa che include il preprocessamento, il calcolo degli incrementi e la visualizzazione delle tendenze dei servizi di teleassistenza su base trimestrale e annuale.
 #### Funzionalità principali
 - **Preprocessamento dei dati**: Converte le date in formati adatti per l'analisi e crea colonne aggiuntive per anno e trimestre.
@@ -87,7 +87,7 @@ La classe `FeatureExtractor` esegue un'analisi del dataset per calcolare gli inc
 - I grafici di correlazione e distribuzione degli incrementi percentuali sono salvati nella cartella `graphs`.
 - Il dataset con le categorie di crescita aggiunte e ottimizzato per l'analisi.
 
-## Clustering.py
+## Clustering.py ([X](https://github.com/Lele991/Project_Telemedicine_FIA24/blob/main/README_funzioni.md#clusteringpy))
 Questo file gestisce l'intero processo di clustering, dalla preparazione dei dati alla scelta del numero ottimale di cluster, fino alla valutazione del modello e alla generazione di grafici.
 #### Funzionalità principali:
 - **Determinazione del numero ottimale di cluster**: Utilizza l'Elbow Method per trovare il numero ottimale di cluster da utilizzare nel modello.
@@ -102,7 +102,7 @@ Questo file gestisce l'intero processo di clustering, dalla preparazione dei dat
 - Risultati salvati in `results`: 
   - `clustering_results.json` con dettagli sul numero di cluster, purezza e performance del modello.
 
-## DataPlot.py
+## DataPlot.py ([X](https://github.com/Lele991/Project_Telemedicine_FIA24/blob/main/README_funzioni.md#dataplotpy))
 Questo file si occupa della generazione e salvataggio di grafici che visualizzano diverse distribuzioni e relazioni nel dataset, con particolare attenzione alla rappresentazione grafica dei cluster.
 #### Funzionalità principali:
 - **Generazione di grafici per la distribuzione dei dati**: Fornisce vari tipi di grafici per analizzare la distribuzione dei cluster, del sesso, delle fasce di età e della durata delle visite.

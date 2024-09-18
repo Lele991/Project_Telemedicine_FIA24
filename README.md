@@ -59,7 +59,7 @@ Questo file gestisce la correzione e l'arricchimento dei dati all'interno del da
 - Introduce una categorizzazione delle età in fasce, standardizzando i dati dei pazienti.
 - Converte colonne in tipi categorici per ottimizzare l'uso della memoria nel dataset.
 
-## `DataCleaner.py`
+## DataCleaner.py
 Questo file è responsabile della pulizia del dataset, assicurando che i dati siano privi di duplicati, valori mancanti e outlier. Fornisce varie funzioni per gestire dati inconsistenti e prepararli per le fasi successive di analisi e modellazione.
 #### Funzionalità principali:
 - Rimuove righe duplicate e registra nel log il numero di duplicati eliminati.
@@ -122,4 +122,39 @@ L'integrazione di strumenti avanzati come la selezione delle feature, l'estrazio
 
 I risultati ottenuti forniscono una base solida per ulteriori sviluppi, tra cui l'ottimizzazione del modello di clustering e l'implementazione di nuovi algoritmi per migliorare la precisione e la granularità dell'analisi. 
 
+# Utilizzo
+<details>
+<summary>Mostra tutto</summary>
+   
+1. **Installazione**:
+   - Clona il repository:
 
+     ```bash
+     git clone https://github.com/Lele991/Project_Telemedicine_FIA24
+     cd Project_Telemedicine_FIA24
+     ```
+
+2. **Creazione dell'ambiente virtuale** (non necessario):
+   - Crea un ambiente virtuale e lo attiva:
+
+     ```bash
+     python3 -m venv venv
+     source venv/bin/activate  # Su Windows: venv\Scripts\activate
+     ```
+
+3. **Installazione dei requisiti**:
+   - Installa le dipendenze richieste:
+
+     ```bash
+     pip install -r requirements.txt
+     ```
+
+4. **Esecuzione del progetto**:
+   - Per avviare l'analisi e l'elaborazione del dataset, esegui il file `main.py`:
+
+     ```bash
+     python main.py
+     ```
+
+Il file `main.py` avvierà il processo di preprocessing, analisi, e clustering dei dati.
+</details>

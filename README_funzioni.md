@@ -1,5 +1,5 @@
 
-### ManageData.py
+## ManageData.py
 
 1. **`__init__(self, dataset, path_province, path_comuni, missing_threshold=0.6)`**:
    - Inizializza l'oggetto ManageData con il dataset, i percorsi ai file delle province e dei comuni, e una soglia per i valori mancanti.
@@ -50,7 +50,7 @@
     
 
 
-### DataFix.py
+## DataFix.py
 
 1. **`fetch_province_code_data(file_path)`**:
    - Carica i dati delle province da un file JSON.
@@ -91,7 +91,7 @@
    - Se possibile, converte anche la colonna `codice_struttura_erogazione` in `int64`.
 
 
-### Datacleaner.py
+## Datacleaner.py
 
 1. **`remove_duplicates(dataset)`**:
    - Rimuove righe duplicate dal dataset.
@@ -119,7 +119,7 @@
    - Registra nel log quanti outlier sono stati trovati e l'azione intrapresa.
 
 
-### FeatureSelection.py
+## FeatureSelection.py
 
 1. **`__init__(self, df, categorical_columns=None, exclude_classes=None)`**:
    - Inizializza l'oggetto FeatureSelection con il DataFrame e le colonne categoriali.
@@ -158,7 +158,7 @@
 
 
 
-### FeatureExtractor.py
+## FeatureExtractor.py
 
 1. **`__init__(self, dataset)`**:
    - Inizializza la classe FeatureExtractor con il dataset fornito.
@@ -194,7 +194,7 @@
      - Classificazione degli incrementi.
      - Generazione dei grafici.
     
-### Clustering.py
+## Clustering.py
 
 1. **`__init__(self, n_clusters=4, use_one_hot=False)`**:
    - Inizializza la classe per eseguire il clustering con KModes.
@@ -250,7 +250,7 @@
 
 
 
-### DataPlot.py
+## DataPlot.py
 
 1. **`__init__(self, df)`**:
    - Inizializza la classe DataPlot con il dataset fornito e crea la cartella 'graphs' se non esiste.

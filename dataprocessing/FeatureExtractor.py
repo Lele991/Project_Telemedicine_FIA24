@@ -73,7 +73,6 @@ class FeatureExtractor:
     def determine_growth_category(self, variazione_percentuale):
         """
         Determina la categoria di crescita percentuale in base alle soglie predefinite
-        con lo stesso comportamento di 'classify_increment'.
         """
         variazione_percentuale = round(variazione_percentuale, 2)
         soglie = {

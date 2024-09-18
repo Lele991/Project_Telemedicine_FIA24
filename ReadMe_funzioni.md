@@ -91,3 +91,30 @@
    - Se possibile, converte anche la colonna `codice_struttura_erogazione` in `int64`.
 
 
+### Datacleaner.py
+
+1. **remove_duplicates(dataset)**:
+   - Rimuove righe duplicate dal dataset.
+   - Registra nel log quante righe duplicate sono state rimosse.
+
+2. **remove_missing_values_rows(dataset, null_threshold=0.6)**:
+   - Rimuove le colonne che hanno una percentuale di valori nulli superiore alla soglia specificata (default: 60%).
+   - Registra nel log quali colonne sono state eliminate.
+
+3. **remove_disdette(dataset)**:
+   - Rimuove le righe in cui la colonna data_disdetta non è nulla (ossia le cancellazioni).
+   - Registra nel log quante righe sono state rimosse.
+
+4. **remove_columns(dataset, columns)**:
+   - Elimina dal dataset le colonne specificate.
+   - Registra nel log le colonne che sono state rimosse o notifica se nessuna colonna specificata è stata trovata.
+
+5. **handle_missing_values(dataset, strategy='mean')**:
+   - Gestisce i valori mancanti nel dataset, riempiendo i valori nulli in base alla strategia scelta (default: media, altre opzioni: 'median', 'mode').
+   - Registra nel log il numero di valori mancanti trovati e gestiti, specificando la strategia utilizzata.
+
+6. **update_dataset_with_outliers(dataset, relevant_columns=['eta_paziente', 'durata_visita', 'descrizione_attivita'], contamination=0.05, action='remove')**:
+   - Identifica e gestisce gli outlier con un approccio ibrido che combina *Isolation Forest* e *Local Outlier Factor*.
+   - Gli outlier possono essere rimossi o segnati, a seconda del parametro action (default: 'remove').
+   - Registra nel log quanti outlier sono stati trovati e l'azione intrapresa.
+

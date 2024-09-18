@@ -37,247 +37,85 @@ La cartella **datapreprocessing** contiene file e sotto-cartelle per la preparaz
 ### Gestione dei log del programma
 **Logging**:
    - Tutto lo script utilizza il logging per segnalare eventuali errori, come file non trovati o problemi nella formattazione dei dati, e per indicare il completamento del processo.
+---
+## ManageData.py
+Questo file gestisce l'intero flusso di preprocessing, analisi e clustering dei dati relativi ai servizi di teleassistenza, assicurando che il dataset sia pulito, preparato e organizzato per l'analisi e il clustering.
+#### Funzionalità principali:
+- Sostituisce valori mancanti e standardizza i dati per migliorare la qualità del dataset.
+- Logga informazioni dettagliate sui valori mancanti e sulle colonne del dataset per monitorare la pulizia dei dati.
+- Salva il dataset processato in formato Parquet, garantendo persistenza dei dati preprocessati.
+- Esegue operazioni di pulizia completa dei dati, rimuovendo duplicati, cancellazioni e gestendo valori nulli.
+- Analizza i dati, calcola metriche come la durata della visita e l'età del paziente, e individua gli outlier.
+- Seleziona e crea le feature più rilevanti attraverso processi di **FeatureSelection** e **FeatureExtractor**.
+- Applica il clustering per organizzare i dati in gruppi e aggiunge etichette di cluster al dataset.
+- Genera grafici per visualizzare i risultati dell'analisi e del clustering, facilitando l'interpretazione dei dati.
 
-### ManageData.py
+## DataFix.py
+Questo file gestisce la correzione e l'arricchimento dei dati all'interno del dataset. Fornisce funzionalità per completare campi mancanti, correggere valori errati, e aggiungere nuove colonne derivate dai dati esistenti.
+#### Funzionalità principali:
+- Carica e utilizza dati esterni per mappare codici a nomi di province e comuni, facilitando la correzione di campi relativi alla localizzazione.
+- Aggiunge colonne calcolate come la durata della visita e l'età del paziente, migliorando la completezza e qualità dei dati.
+- Gestisce i valori mancanti nella durata delle visite utilizzando dati disponibili o calcolando una durata media.
+- Introduce una categorizzazione delle età in fasce, standardizzando i dati dei pazienti.
+- Converte colonne in tipi categorici per ottimizzare l'uso della memoria nel dataset.
 
-La classe `ManageData` gestisce l'intero processo di preprocessing, analisi e clustering del dataset per l'analisi dei servizi di teleassistenza. 
+## `DataCleaner.py`
+Questo file è responsabile della pulizia del dataset, assicurando che i dati siano privi di duplicati, valori mancanti e outlier. Fornisce varie funzioni per gestire dati inconsistenti e prepararli per le fasi successive di analisi e modellazione.
+#### Funzionalità principali:
+- Rimuove righe duplicate e registra nel log il numero di duplicati eliminati.
+- Elimina le colonne con troppi valori mancanti, rispettando una soglia configurabile.
+- Filtra le righe corrispondenti a cancellazioni, come indicato nella colonna `data_disdetta`.
+- Permette la rimozione di colonne specifiche dal dataset, segnalando eventuali eliminazioni non valide.
+- Gestisce i valori mancanti attraverso diverse strategie (media, mediana o moda) e riempie i valori nulli.
+- Identifica e gestisce gli outlier utilizzando algoritmi avanzati come *Isolation Forest* e *Local Outlier Factor*, con opzioni per rimuoverli o segnarli nel dataset.
 
-#### Funzionalità Principali:
+## FeatureSelection.py
+La classe `FeatureSelection` è progettata per eseguire la selezione delle caratteristiche categoriali in un dataset. Utilizza la V di Cramér per calcolare la correlazione tra le variabili categoriali e rimuovere le caratteristiche altamente o perfettamente correlate. Fornisce una pipeline completa per gestire la selezione delle feature in un unico passaggio, con visualizzazioni delle correlazioni tramite heatmap.
+#### Funzionalità principali
+- **Calcolo della correlazione categoriale**: Calcola la correlazione tra variabili categoriali utilizzando la V di Cramér.
+- **Rimozione delle caratteristiche correlate**: Rimuove le colonne perfettamente correlate o con correlazione superiore a una soglia definita dall'utente.
+- **Generazione di heatmap**: Visualizza le correlazioni tra le variabili prima e dopo la selezione delle caratteristiche, salvando i grafici in formato immagine.
+- **Esecuzione automatizzata**: Fornisce una pipeline che esegue l'intero processo di selezione delle feature con un singolo comando.
+**Output**:
+- Le heatmap di correlazione sono salvate nella directory `graphs` con il nome `combined_plot.png`, mostrando la correlazione delle feature prima e dopo il processo di selezione.
 
-1. **replace_none_with_nan**: Sostituisce i valori 'None' e `None` con `NaN` all'interno del dataset per standardizzare i valori mancanti.
-
-2. **log_missing_values**: Logga le colonne del dataset che contengono valori mancanti, fornendo un conteggio dettagliato per ogni colonna.
-
-3. **save_dataset**: Salva il dataset processato in formato Parquet.
-
-4. **print_columns**: Logga e stampa l'elenco delle colonne presenti nel dataset.
-
-5. **clean_data**: Esegue un ciclo completo di pulizia del dataset:
-    - Rimuove cancellazioni (`data_disdetta` non nullo).
-    - Riempie i campi comuni e province utilizzando dati esterni.
-    - Rimuove duplicati e colonne non necessarie.
-    - Gestisce i valori mancanti in base a una soglia di tolleranza configurabile.
-      
-6. **run_analysis**: Esegue il ciclo completo di analisi, che include:
-    - Pulizia del dataset.
-    - Aggiunta della durata della visita e calcolo dell'età del paziente.
-    - Identificazione e gestione degli outlier.
-    - Selezione delle feature più rilevanti attraverso la **FeatureSelection**.
-    - Estrazione di nuove feature attraverso la **FeatureExtractor**.
-    - Applicazione del clustering attraverso la classe **Clustering** e salvataggio del dataset con l'aggiunta delle etichette di cluster.
-    - Visualizzazione e salvataggio dei grafici tramite la classe **DataPlot**.
-
-
-### Datacleaner.py
-
-1. **remove_duplicates(dataset)**:
-   - Rimuove righe duplicate dal dataset.
-   - Registra nel log quante righe duplicate sono state rimosse.
-
-2. **remove_missing_values_rows(dataset, null_threshold=0.6)**:
-   - Rimuove le colonne che hanno una percentuale di valori nulli superiore alla soglia specificata (default: 60%).
-   - Registra nel log quali colonne sono state eliminate.
-
-3. **remove_disdette(dataset)**:
-   - Rimuove le righe in cui la colonna `data_disdetta` non è nulla (ossia le cancellazioni).
-   - Registra nel log quante righe sono state rimosse.
-
-4. **remove_columns(dataset, columns)**:
-   - Elimina dal dataset le colonne specificate.
-   - Registra nel log le colonne che sono state rimosse o notifica se nessuna colonna specificata è stata trovata.
-
-5. **handle_missing_values(dataset, strategy='mean')**:
-   - Gestisce i valori mancanti nel dataset, riempiendo i valori nulli in base alla strategia scelta (default: media, altre opzioni: 'median', 'mode').
-   - Registra nel log il numero di valori mancanti trovati e gestiti, specificando la strategia utilizzata.
-
-6. **update_dataset_with_outliers(dataset, relevant_columns=['eta_paziente', 'durata_visita', 'descrizione_attivita'], contamination=0.05, action='remove')**:
-   - Identifica e gestisce gli outlier con un approccio ibrido che combina **Isolation Forest** e **Local Outlier Factor**.
-   - Gli outlier possono essere rimossi o segnati, a seconda del parametro `action` (default: 'remove').
-   - Registra nel log quanti outlier sono stati trovati e l'azione intrapresa.
-
-### Datafix.py
-
-1. **fetch_province_code_data(file_path)**:
-   - Carica i dati delle province da un file JSON e restituisce dizionari che mappano i codici delle province ai nomi e viceversa.
-
-2. **fetch_comuni_code_data(file_path)**:
-   - Carica i dati dei comuni da un file JSON e restituisce dizionari che mappano i codici dei comuni ai nomi e viceversa.
-
-3. **process_province_comuni(dataset, codice_to_provincia, provincia_to_codice, codice_to_comune, comune_to_codice)**:
-   - Riempie i campi relativi a comuni e province nel dataset utilizzando i dizionari di mappatura caricati dai file JSON.
-
-4. **add_durata_visita(dataset)**:
-   - Calcola la durata della visita basandosi sull'ora di inizio e fine, aggiungendo una colonna 'durata_visita' in minuti.
-
-5. **add_eta_paziente(dataset)**:
-   - Calcola l'età del paziente in base alla data di nascita e aggiunge una colonna 'eta_paziente'. Le età non plausibili sono gestite come valori mancanti (NaN).
-
-6. **fill_durata_visita(dataset)**:
-   - Riempie i valori mancanti nella colonna 'durata_visita' utilizzando la durata media per tipo di servizio, o calcola la durata se disponibili ora di inizio e fine.
-
-7. **add_fascia_eta_column(dataset)**:
-   - Aggiunge una colonna 'fascia_eta' per categorizzare i pazienti in diverse fasce d'età e normalizza i valori di età.
-
-8. **colonne_to_category(df, colonne)**:
-   - Converte le colonne specificate in 'category' per ottimizzare la memoria.
-
-
-
-### DataPlot,py
-
-
-#### Metodi Principali
-
-1. **save_plot(self, plt, filename)**: Salva il grafico generato nella directory 'graphs'.
-
-2. **plot_cluster_distribution(self)**: 
-   - Crea un grafico a barre per visualizzare la distribuzione dei cluster nel dataset.
-
-3. **plot_sex_distribution_by_cluster(self)**: 
-   - Visualizza la distribuzione di genere nei vari cluster.
-
-4. **plot_age_distribution_by_cluster(self)**: 
-   - Mostra la distribuzione delle fasce di età nei cluster.
-
-5. **plot_visit_duration_by_cluster(self)**: 
-   - Visualizza la durata media delle visite per ciascun cluster.
-
-6. **plot_cluster_by_region(self)**: 
-   - Mostra la distribuzione dei cluster per regione di residenza.
-
-7. **plot_cluster_by_structure_type(self)**: 
-   - Visualizza la distribuzione dei cluster per tipologia di struttura di erogazione.
-
-8. **plot_increment_by_cluster(self)**: 
-   - Mostra la distribuzione degli incrementi classificati per ciascun cluster.
-
-9. **plot_cluster_by_quarter(self)**: 
-   - Visualizza la distribuzione dei cluster per trimestre.
-
-10. **generate_plots(self)**: 
-    - Esegue tutti i grafici disponibili e li salva nella directory 'graphs'.
-
-## Output
-
-Tutti i grafici sono salvati nella directory 'graphs'. I principali grafici includono:
-- **Distribuzione dei Cluster** (`cluster_distribution.png`)
-  
-- **Distribuzione del Sesso nei Cluster** (`sex_distribution_by_cluster.png`)
-  
-- **Distribuzione delle Fasce d'Età nei Cluster** (`age_distribution_by_cluster.png`)
-  
-- **Durata delle Visite per Cluster** (`visit_duration_by_cluster.png`)
-  
-- **Distribuzione dei Cluster per Regione** (`cluster_by_region.png`)
-  
-- **Distribuzione dei Cluster per Tipologia di Struttura** (`cluster_by_structure_type.png`)
-  
-- **Incremento Classificato per Cluster** (`increment_by_cluster.png`)
-  
-- **Distribuzione dei Cluster per Trimestre** (`cluster_by_quarter.png`)
-
+## FeatureExtraction.py
+La classe `FeatureExtractor` esegue un'analisi del dataset per calcolare gli incrementi percentuali dei servizi erogati nel tempo, categorizza le variazioni di crescita e crea grafici per visualizzare l'andamento dei dati. Fornisce una pipeline completa che include il preprocessamento, il calcolo degli incrementi e la visualizzazione delle tendenze dei servizi di teleassistenza su base trimestrale e annuale.
+#### Funzionalità principali
+- **Preprocessamento dei dati**: Converte le date in formati adatti per l'analisi e crea colonne aggiuntive per anno e trimestre.
+- **Calcolo degli incrementi percentuali**: Raggruppa i dati per anno, trimestre e attività per calcolare le variazioni percentuali dei servizi rispetto ai periodi precedenti.
+- **Categorizzazione della crescita**: Classifica le variazioni percentuali in categorie come 'crescita costante' o 'decrescita'.
+- **Visualizzazione grafica**: Genera grafici, come istogrammi e boxplot, per visualizzare la distribuzione degli incrementi e l'andamento trimestrale.
+- **Esecuzione automatizzata**: Esegue l'intera analisi in sequenza, dal preprocessamento alla visualizzazione.
+#### Output
+- I grafici di correlazione e distribuzione degli incrementi percentuali sono salvati nella cartella `graphs`.
+- Il dataset con le categorie di crescita aggiunte e ottimizzato per l'analisi.
 
 ## Clustering.py
+Questo file gestisce l'intero processo di clustering, dalla preparazione dei dati alla scelta del numero ottimale di cluster, fino alla valutazione del modello e alla generazione di grafici.
+#### Funzionalità principali:
+- **Determinazione del numero ottimale di cluster**: Utilizza l'Elbow Method per trovare il numero ottimale di cluster da utilizzare nel modello.
+- **Preprocessing dei dati**: Converte le variabili categoriali in numeriche e standardizza i dati per prepararli al clustering.
+- **Esecuzione del clustering**: Esegue il clustering utilizzando KModes e calcola il Silhouette Score, la purity e la metrica finale per valutare la qualità del clustering.
+- **Valutazione della purezza**: Confronta i cluster con una colonna di riferimento per calcolare la purezza del modello.
+- **Visualizzazione dei cluster**: Genera grafici bidimensionali e tridimensionali dei cluster usando la PCA, insieme a un Silhouette plot.
+- **Esportazione dei risultati**: Salva i grafici e i risultati finali del clustering in formato JSON per l'analisi successiva.
+#### Output
+- Grafici salvati nella directory `graphs`: 
+  - Elbow Method, PCA 2D, PCA 3D, Silhouette plot.
+- Risultati salvati in `results`: 
+  - `clustering_results.json` con dettagli sul numero di cluster, purezza e performance del modello.
 
-### Parametri Principali
-- **n_clusters**: Numero di cluster da utilizzare nel modello KModes.
-- **use_one_hot**: Se impostato su True, utilizza One-Hot Encoding per le variabili categoriali; altrimenti utilizza Label Encoding.
-
-### Metodi Principali
-- **get_dataset_clustered()**: Restituisce il dataset con le etichette assegnate ai cluster.
-  
-- **elbow_method(self, dataset, min_clusters=2, max_clusters=6, threshold=0.05)**: Esegue l'Elbow Method per determinare il numero ottimale di cluster e salva il grafico nella directory graphs. Usa un'euristica basata su un threshold per identificare l'angolo (elbow) nel grafico delle distorsioni.
-
-- **preprocess_data(self, dataset)**: Trasforma le variabili categoriali in numeriche usando One-Hot o Label Encoding, e standardizza i dati numerici per il clustering. Restituisce il dataset preprocessato e l'array dei cluster.
-
-- **fit(self, dataset)**: Esegue il clustering con KModes, calcola il Silhouette Score e restituisce il dataset con le etichette assegnate ai cluster. Viene effettuata una verifica preliminare per rilevare valori nulli nel dataset.
-
-- **calculate_purity(self, dataset, label_column='incremento_classificato')**: Calcola la purezza del clustering confrontando le etichette assegnate ai cluster con una colonna di riferimento (es. incremento_classificato). Supporta dataset trasformati con One-Hot Encoding.
-
-- **plot_clusters(self, dataset)**: Crea e salva un grafico bidimensionale (2D) dei cluster usando la PCA per ridurre le dimensioni e un Silhouette plot. Entrambi i grafici vengono salvati nella directory graphs.
-
-- **plot_clusters_3d(self, dataset)**: Crea e salva un grafico tridimensionale (3D) dei cluster, utilizzando la PCA per ridurre le dimensioni a 3 componenti principali. Il grafico viene salvato nella directory graphs.
-
-- **run_clustering(self, dataset, label_column='incremento_classificato', excluded_columns=None)**: Esegue l'intero processo di clustering, che include il preprocessing dei dati, l'esecuzione del clustering, il calcolo della purezza, la creazione dei grafici e il salvataggio dei risultati finali.
-
-### Output
-
-- **Grafici Salvati**: Tutti i grafici generati durante il processo di clustering vengono salvati nella directory graphs:
-  - Elbow Method (elbow_method.png)
-  - PCA Plot 2D (pca_clusters.png)
-  - PCA Plot 3D (pca_clusters_3d.png)
-  - Silhouette Plot (silhouette_plot.png)
-
-- **Risultati Clustering**: I risultati del clustering vengono salvati nella directory results in formato JSON:
-  - clustering_results.json: Contiene informazioni sulle colonne escluse e utilizzate, il numero di cluster ottimali, il silhouette score medio, la purezza e la metrica finale calcolata.
+## DataPlot.py
+Questo file si occupa della generazione e salvataggio di grafici che visualizzano diverse distribuzioni e relazioni nel dataset, con particolare attenzione alla rappresentazione grafica dei cluster.
+#### Funzionalità principali:
+- **Generazione di grafici per la distribuzione dei dati**: Fornisce vari tipi di grafici per analizzare la distribuzione dei cluster, del sesso, delle fasce di età e della durata delle visite.
+- **Analisi regionale e strutturale**: Crea grafici che mostrano come i cluster sono distribuiti nelle regioni di residenza e nelle diverse tipologie di strutture.
+- **Incrementi classificati e temporalità**: Visualizza gli incrementi per cluster e la loro distribuzione nel tempo, suddivisi per trimestre.
+- **Esportazione dei grafici**: Salva tutti i grafici generati nella directory dedicata 'graphs' per facilitare l'analisi e la consultazione visiva.
 
 
-### FeatureSelection.py
-
-## Descrizione
-
-La classe FeatureSelection è progettata per eseguire la selezione delle caratteristiche su un dataset, concentrandosi in particolare su colonne categoriali. L'algoritmo utilizza la V di Cramér per calcolare la correlazione tra le colonne e rimuove le caratteristiche che sono perfettamente o altamente correlate, in base a una soglia definita. Inoltre, genera heatmap per visualizzare la correlazione tra le variabili.
-
-## Funzionalità Principali
-
-- *Calcolo della correlazione tra variabili categoriali*: Utilizza la V di Cramér per determinare la correlazione tra le variabili categoriali.
-- *Rimozione delle caratteristiche perfettamente correlate*: Rimuove le colonne con correlazione perfetta (V di Cramér pari a 1.0).
-- *Rimozione delle caratteristiche altamente correlate*: Opzionalmente, rimuove le colonne con correlazione superiore a una soglia definita dall'utente.
-- *Visualizzazione delle correlazioni*: Genera heatmap delle correlazioni prima e dopo il processo di selezione delle caratteristiche.
-- *Pipeline completa*: Esegue l'intero processo di selezione delle caratteristiche in una singola chiamata.
-
-## Comandi Principali
-
-- **calculate_cramers_v(column1, column2)** :
-Calcola il V di Cramér tra due variabili categoriali.
-- **create_correlation_matrix()** :
-Crea una matrice di correlazione utilizzando Cramér's V per tutte le colonne categoriali del dataset.
-- **remove_perfectly_correlated_features(corr_matrix, threshold=1.0)**: Rimuove le colonne con correlazione perfetta.
-- **remove_highly_correlated_features(corr_matrix, threshold=0.8)**:Rimuove le colonne con correlazione superiore alla soglia specificata.
-- **display_heatmap(corr_matrix, title, filename)**: Genera e salva una heatmap della matrice di correlazione.
-- **execute_feature_selection(threshold=0.8,remove_others_colum_by_threshold=False)**: Esegue l'intera pipeline di selezione delle caratteristiche.
-
-
-## Output
-
-•	I grafici saranno salvati nella directory ‘ graphs ‘ con il nome ‘ combined_plot.png ‘.
-
-
-### FeatureExtraction.py
-
-## Descrizione
-
-Questa classe **FeatureExtractor** è progettata per analizzare un dataset, identificare e categorizzare gli incrementi percentuali di servizi erogati in base al tempo (per trimestre e anno) e fornire una visualizzazione dei dati. La pipeline di analisi include il preprocessamento dei dati, il calcolo degli incrementi, la categorizzazione della crescita e la creazione di grafici per comprendere le tendenze del dataset.
-
-## Funzionalità Principali
-
--	*Preprocessamento dei Dati*: Conversione delle date in formati utilizzabili per l'analisi e creazione di nuove colonne per anno e trimestre.
--	*Calcolo degli Incrementi Percentuali*: Raggruppamento dei dati per anno, trimestre e attività, calcolo della variazione percentuale del numero di servizi rispetto ai trimestri precedenti.
--	*Categorizzazione della Crescita*: Classificazione degli incrementi percentuali in categorie come 'crescita costante', 'crescita bassa', 'decrescita', ecc.
--	*Creazione di Grafici*: Generazione di istogrammi e boxplot per visualizzare la distribuzione degli incrementi percentuali, creazione di un grafico per analizzare l’andamento trimestrale delle teleassistenze.
--	*Pipeline Completa*: Esecuzione  dell'intera pipeline di analisi in sequenza.
-
-## Comandi Principali
-
--	**preprocess_data()**:  Prepara i dati convertendo le date in formato datetime e creando le colonne "anno" e "trimestre".
--	**calculate_percentage_increments()**:  Calcola gli incrementi percentuali del numero di servizi per ogni attività, raggruppando per anno e trimestre.
--	**determine_growth_category(variazione_percentuale)**: Determina la categoria di crescita in base agli incrementi percentuali.
--	**apply_growth_categorization(grouped ’)**: Applica la categorizzazione della crescita al dataset originale.
--	**plot_graph()**:  Genera e salva grafici per visualizzare la distribuzione degli incrementi percentuali e l'andamento trimestrale delle teleassistenze.
--	**run_analysis()**:  Esegue l'intera pipeline di analisi dei dati, dal preprocessamento alla generazione dei grafici.
-
-
-
-  ## Output
-
-   - Heatmap delle correlazioni (iniziale e finale) salvate in graphs.
-   - Dataset ottimizzato senza variabili altamente correlate.
-     
-	 
-
-
-### Conclusioni
-
+## Conclusioni
 Il progetto di **Clustering Supervisionato per la Teleassistenza** ha dimostrato come l'analisi dei dati e l'applicazione di tecniche di clustering possano migliorare significativamente la gestione e l'efficacia dei servizi di teleassistenza. Attraverso la profilazione dei pazienti basata su caratteristiche rilevanti, come età, durata delle visite, e distribuzione geografica, è possibile individuare pattern utili per personalizzare le cure e ridurre il carico sugli ospedali.
 
 L'integrazione di strumenti avanzati come la selezione delle feature, l'estrazione delle caratteristiche, e la gestione dei dati, ha permesso di realizzare un workflow efficiente che può essere applicato a contesti reali di teleassistenza. La combinazione di algoritmi di clustering e tecniche di visualizzazione dei dati ha portato a una maggiore comprensione delle dinamiche del servizio, favorendo decisioni informate per migliorare la qualità dell'assistenza sanitaria a distanza.
